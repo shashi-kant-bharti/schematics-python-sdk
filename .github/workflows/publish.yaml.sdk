@@ -1,0 +1,35 @@
+# This workflow is responsible for:
+# - publishing the Python Package to PyPI.
+# It is triggered when a new release is created.
+
+name: publish
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+    # Allow this workflow to be triggered manually
+
+jobs:
+  publish:
+    name: publish-release
+    # NOTE: if you wish to run this workflow on github.com
+    # change the value below to "ubuntu-latest".
+    runs-on: ibm-x86-64-small
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
+
+      - name: Build and publish distribution
+        env:
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: |
+          make ci
+          make publish-release

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (C) Copyright IBM Corp. 2024.
+# (C) Copyright IBM Corp. 2026.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,7 +60,8 @@ class TestSchematicsV1Examples:
 
             # begin-common
 
-            schematics_service = SchematicsV1.new_instance()
+            schematics_service = SchematicsV1.new_instance(
+            )
 
             # end-common
             assert schematics_service is not None
@@ -74,26 +75,6 @@ class TestSchematicsV1Examples:
     needscredentials = pytest.mark.skipif(
         not os.path.exists(config_file), reason="External configuration not available, skipping..."
     )
-
-    @needscredentials
-    def test_list_schematics_location_example(self):
-        """
-        list_schematics_location request example
-        """
-        try:
-            print('\nlist_schematics_location() result:')
-
-            # begin-list_schematics_location
-
-            response = schematics_service.list_schematics_location()
-            list_schematics_locations = response.get_result()
-
-            print(json.dumps(list_schematics_locations, indent=2))
-
-            # end-list_schematics_location
-
-        except ApiException as e:
-            pytest.fail(str(e))
 
     @needscredentials
     def test_list_locations_example(self):
@@ -165,12 +146,21 @@ class TestSchematicsV1Examples:
 
             # begin-ProcessTemplateMetaData
 
+            git_source_model = {
+                'computed_git_repo_url': 'https://github.com/IBM-Cloud/terraform-provider-ibm/tree/master/examples/ibm-vsi',
+                'git_repo_url': 'https://github.com/IBM-Cloud/terraform-provider-ibm',
+                'git_repo_folder': 'examples/ibm-vsi',
+                'git_release': 'v1.0.0',
+                'git_branch': 'master',
+            }
+
             external_source_model = {
-                'source_type': 'local',
+                'source_type': 'git_hub',
+                'git': git_source_model,
             }
 
             response = schematics_service.process_template_meta_data(
-                template_type='testString',
+                template_type='terraform_v1_0',
                 source=external_source_model,
             )
             template_meta_data_response = response.get_result()
@@ -178,6 +168,73 @@ class TestSchematicsV1Examples:
             print(json.dumps(template_meta_data_response, indent=2))
 
             # end-ProcessTemplateMetaData
+
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
+    def test_get_workspace_resources_v2_example(self):
+        """
+        get_workspace_resources_v2 request example
+        """
+        try:
+            print('\nget_workspace_resources_v2() result:')
+
+            # begin-get_workspace_resources_v2
+
+            response = schematics_service.get_workspace_resources_v2(
+                w_id='testString',
+            )
+            template_resources_object = response.get_result()
+
+            print(json.dumps(template_resources_object, indent=2))
+
+            # end-get_workspace_resources_v2
+
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
+    def test_get_workspace_outputs_v2_example(self):
+        """
+        get_workspace_outputs_v2 request example
+        """
+        try:
+            print('\nget_workspace_outputs_v2() result:')
+
+            # begin-get_workspace_outputs_v2
+
+            response = schematics_service.get_workspace_outputs_v2(
+                w_id='testString',
+            )
+            output_values_object = response.get_result()
+
+            print(json.dumps(output_values_object, indent=2))
+
+            # end-get_workspace_outputs_v2
+
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
+    def test_get_workspace_input_metadata_v2_example(self):
+        """
+        get_workspace_input_metadata_v2 request example
+        """
+        try:
+            print('\nget_workspace_input_metadata_v2() result:')
+
+            # begin-get_workspace_input_metadata_v2
+
+            response = schematics_service.get_workspace_input_metadata_v2(
+                w_id='testString',
+                t_id='testString',
+            )
+            template_values_meta_data = response.get_result()
+
+            print(json.dumps(template_values_meta_data, indent=2))
+
+            # end-get_workspace_input_metadata_v2
 
         except ApiException as e:
             pytest.fail(str(e))
@@ -212,7 +269,31 @@ class TestSchematicsV1Examples:
 
             # begin-create_workspace
 
-            response = schematics_service.create_workspace()
+            workspace_variable_request_model = {
+                'name': 'region',
+                'type': 'string',
+                'value': 'us-south',
+            }
+
+            template_source_data_request_model = {
+                'type': 'terraform_v1.9',
+                'variablestore': [workspace_variable_request_model],
+            }
+
+            template_repo_request_model = {
+                'url': 'https://github.com/ptaube/tf_cloudless_sleepy',
+            }
+
+            response = schematics_service.create_workspace(
+                description='Workspace to provision infrastructure',
+                location='us-east',
+                name='my-terraform-workspace',
+                resource_group='Default',
+                tags=['env:dev', 'project:demo'],
+                template_data=[template_source_data_request_model],
+                template_repo=template_repo_request_model,
+                type=['terraform_v1.9'],
+            )
             workspace_response = response.get_result()
 
             print(json.dumps(workspace_response, indent=2))
@@ -245,28 +326,6 @@ class TestSchematicsV1Examples:
             pytest.fail(str(e))
 
     @needscredentials
-    def test_replace_workspace_example(self):
-        """
-        replace_workspace request example
-        """
-        try:
-            print('\nreplace_workspace() result:')
-
-            # begin-replace_workspace
-
-            response = schematics_service.replace_workspace(
-                w_id='testString',
-            )
-            workspace_response = response.get_result()
-
-            print(json.dumps(workspace_response, indent=2))
-
-            # end-replace_workspace
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
     def test_update_workspace_example(self):
         """
         update_workspace request example
@@ -276,14 +335,72 @@ class TestSchematicsV1Examples:
 
             # begin-update_workspace
 
+            workspace_status_update_request_model = {
+                'frozen': False,
+            }
+
             response = schematics_service.update_workspace(
                 w_id='testString',
+                description='Updated workspace description',
+                name='my-workspace-updated',
+                tags=['env:production', 'team:devops'],
+                workspace_status=workspace_status_update_request_model,
             )
             workspace_response = response.get_result()
 
             print(json.dumps(workspace_response, indent=2))
 
             # end-update_workspace
+
+        except ApiException as e:
+            pytest.fail(str(e))
+
+    @needscredentials
+    def test_replace_workspace_example(self):
+        """
+        replace_workspace request example
+        """
+        try:
+            print('\nreplace_workspace() result:')
+
+            # begin-replace_workspace
+
+            workspace_variable_request_model = {
+                'description': 'Description of sample_var',
+                'name': 'sample_var',
+                'secure': False,
+                'value': 'THIS IS IBM CLOUD TERRAFORM CLI DEMO',
+            }
+
+            template_source_data_request_model = {
+                'folder': '.',
+                'type': 'terraform_v1.0',
+                'variablestore': [workspace_variable_request_model],
+            }
+
+            template_repo_update_request_model = {
+                'url': 'https://github.com/ptaube/tf_cloudless_sleepy',
+            }
+
+            workspace_status_update_request_model = {
+                'frozen': True,
+            }
+
+            response = schematics_service.replace_workspace(
+                w_id='testString',
+                description='terraform workspace updated',
+                name='testWorkspaceApi',
+                tags=['department:HR', 'application:compensation', 'environment:staging'],
+                template_data=[template_source_data_request_model],
+                template_repo=template_repo_update_request_model,
+                type=['terraform_v1.0'],
+                workspace_status=workspace_status_update_request_model,
+            )
+            workspace_response = response.get_result()
+
+            print(json.dumps(workspace_response, indent=2))
+
+            # end-replace_workspace
 
         except ApiException as e:
             pytest.fail(str(e))
@@ -366,9 +483,20 @@ class TestSchematicsV1Examples:
 
             # begin-replace_workspace_inputs
 
+            workspace_variable_request_model = {
+                'description': 'IBM Cloud region',
+                'name': 'region',
+                'secure': False,
+                'type': 'string',
+                'value': 'us-south',
+            }
+
             response = schematics_service.replace_workspace_inputs(
                 w_id='testString',
                 t_id='testString',
+                env_values=[{'name': 'env_variable_name', 'value': 'env_variable_value'}],
+                values='string',
+                variablestore=[workspace_variable_request_model],
             )
             user_values = response.get_result()
 
@@ -635,7 +763,23 @@ class TestSchematicsV1Examples:
 
             # begin-create_action
 
-            response = schematics_service.create_action()
+            git_source_model = {
+                'git_repo_url': 'https://github.com/Cloud-Schematics/ansible-is-instance-actions',
+            }
+
+            external_source_model = {
+                'source_type': 'git',
+                'git': git_source_model,
+            }
+
+            response = schematics_service.create_action(
+                name='Example-12ab1334',
+                description='action_description',
+                location='us-south',
+                resource_group='test',
+                tags=['department:HR', 'application:compensation', 'environment:staging', 'env:dev', 'k8s'],
+                source=external_source_model,
+            )
             action = response.get_result()
 
             print(json.dumps(action, indent=2))
@@ -677,8 +821,35 @@ class TestSchematicsV1Examples:
 
             # begin-update_action
 
+            git_source_model = {
+                'git_repo_url': 'https://github.com/Cloud-Schematics/ansible-lamp-stack',
+                'git_branch': 'v2.0',
+            }
+
+            external_source_model = {
+                'source_type': 'git_hub',
+                'git': git_source_model,
+            }
+
+            variable_metadata_model = {
+                'type': 'string',
+                'secure': True,
+            }
+
+            variable_data_model = {
+                'name': 'db_password',
+                'value': 'NewSecurePassword456',
+                'metadata': variable_metadata_model,
+            }
+
             response = schematics_service.update_action(
                 action_id='testString',
+                name='Deploy LAMP Stack - Updated',
+                description='Updated action to deploy LAMP stack with new configuration',
+                tags=['env:production', 'app:lamp', 'version:2.0'],
+                source=external_source_model,
+                command_parameter='site-v2.yml',
+                inputs=[variable_data_model],
             )
             action = response.get_result()
 
@@ -790,8 +961,8 @@ class TestSchematicsV1Examples:
             # begin-apply_workspace_command
 
             response = schematics_service.apply_workspace_command(
-                w_id='testString',
                 refresh_token='testString',
+                w_id='testString',
             )
             workspace_activity_apply_result = response.get_result()
 
@@ -813,8 +984,8 @@ class TestSchematicsV1Examples:
             # begin-destroy_workspace_command
 
             response = schematics_service.destroy_workspace_command(
-                w_id='testString',
                 refresh_token='testString',
+                w_id='testString',
             )
             workspace_activity_destroy_result = response.get_result()
 
@@ -903,6 +1074,10 @@ class TestSchematicsV1Examples:
 
             response = schematics_service.create_job(
                 refresh_token='testString',
+                command_object='action',
+                command_object_id='us-east.ACTION.Example-12a1b212.3287dc42',
+                command_name='ansible_playbook_run',
+                command_parameter='site.yml',
             )
             job = response.get_result()
 
@@ -948,6 +1123,10 @@ class TestSchematicsV1Examples:
             response = schematics_service.update_job(
                 job_id='testString',
                 refresh_token='testString',
+                command_object='action',
+                command_object_id='us-east.ACTION.Example-12a1b212.3287dc42',
+                command_name='ansible_playbook_run',
+                command_parameter='site.yml',
             )
             job = response.get_result()
 
@@ -1015,6 +1194,8 @@ class TestSchematicsV1Examples:
 
             response = schematics_service.create_workspace_deletion_job(
                 refresh_token='testString',
+                job='delete',
+                workspaces=['us-south.workspace.testWorkspace.a6010c37', 'us-south.workspace.teraformNewupdatedone.72011986', 'us-south.workspace.readterraform.400b427c', 'us-south.workspace.myworkspacesink.49745827', 'us-south.workspace.ReadTerraformTemp.c98c9774', 'us-south.workspace.SampleTest1.2a51c3a1'],
             )
             workspace_bulk_delete_response = response.get_result()
 
@@ -1077,7 +1258,13 @@ class TestSchematicsV1Examples:
 
             # begin-create_inventory
 
-            response = schematics_service.create_inventory()
+            response = schematics_service.create_inventory(
+                name='dev-inventoryapidocexample',
+                description='My cloud linux inventory',
+                location='us-east',
+                resource_group='Default',
+                inventories_ini='[windows]\n158.177.7.181',
+            )
             inventory_resource_record = response.get_result()
 
             print(json.dumps(inventory_resource_record, indent=2))
@@ -1119,8 +1306,37 @@ class TestSchematicsV1Examples:
 
             # begin-replace_inventory
 
+            credential_variable_metadata_model = {
+            }
+
+            credential_variable_data_model = {
+                'metadata': credential_variable_metadata_model,
+            }
+
+            host_model = {
+                'name': '158.177.7.182',
+                'credential': credential_variable_data_model,
+            }
+
+            group_model = {
+                'name': 'windows',
+                'credentials': credential_variable_data_model,
+                'hosts': [host_model],
+            }
+
+            inventory_view_model = {
+                'groups': [group_model],
+            }
+
             response = schematics_service.replace_inventory(
                 inventory_id='testString',
+                name='dev-inventoryapidocexample',
+                description='My cloud linux inventory',
+                location='us-east',
+                resource_group='Default',
+                connection_type='ssh',
+                inventories_ini='[windows]\n158.177.7.182',
+                inventory_view=inventory_view_model,
             )
             inventory_resource_record = response.get_result()
 
@@ -1161,7 +1377,22 @@ class TestSchematicsV1Examples:
 
             # begin-create_resource_query
 
-            response = schematics_service.create_resource_query()
+            resource_query_param_model = {
+                'name': 'workspace-id',
+                'value': 'us-east.ACTION.kubectlWorkshop.1010101',
+                'description': 'string',
+            }
+
+            resource_query_model = {
+                'query_type': 'workspaces',
+                'query_condition': [resource_query_param_model],
+            }
+
+            response = schematics_service.create_resource_query(
+                type='workspace_resource',
+                name='hello',
+                queries=[resource_query_model],
+            )
             resource_query_record = response.get_result()
 
             print(json.dumps(resource_query_record, indent=2))
@@ -1194,28 +1425,6 @@ class TestSchematicsV1Examples:
             pytest.fail(str(e))
 
     @needscredentials
-    def test_replace_resources_query_example(self):
-        """
-        replace_resources_query request example
-        """
-        try:
-            print('\nreplace_resources_query() result:')
-
-            # begin-replace_resources_query
-
-            response = schematics_service.replace_resources_query(
-                query_id='testString',
-            )
-            resource_query_record = response.get_result()
-
-            print(json.dumps(resource_query_record, indent=2))
-
-            # end-replace_resources_query
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
     def test_execute_resource_query_example(self):
         """
         execute_resource_query request example
@@ -1238,94 +1447,37 @@ class TestSchematicsV1Examples:
             pytest.fail(str(e))
 
     @needscredentials
-    def test_list_agent_example(self):
+    def test_replace_resources_query_example(self):
         """
-        list_agent request example
-        """
-        try:
-            print('\nlist_agent() result:')
-
-            # begin-list_agent
-
-            response = schematics_service.list_agent()
-            agent_list = response.get_result()
-
-            print(json.dumps(agent_list, indent=2))
-
-            # end-list_agent
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_register_agent_example(self):
-        """
-        register_agent request example
+        replace_resources_query request example
         """
         try:
-            print('\nregister_agent() result:')
+            print('\nreplace_resources_query() result:')
 
-            # begin-register_agent
+            # begin-replace_resources_query
 
-            response = schematics_service.register_agent(
-                name='MyDevAgent',
-                agent_location='us-south',
-                location='us-south',
-                profile_id='testString',
+            resource_query_param_model = {
+                'name': 'workspace-id',
+                'value': 'us-east.ACTION.kubectlWorkshop.1010101',
+                'description': 'string',
+            }
+
+            resource_query_model = {
+                'query_type': 'workspaces',
+                'query_condition': [resource_query_param_model],
+            }
+
+            response = schematics_service.replace_resources_query(
+                query_id='testString',
+                type='workspace_resource',
+                name='hello my world',
+                queries=[resource_query_model],
             )
-            agent = response.get_result()
+            resource_query_record = response.get_result()
 
-            print(json.dumps(agent, indent=2))
+            print(json.dumps(resource_query_record, indent=2))
 
-            # end-register_agent
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_get_agent_example(self):
-        """
-        get_agent request example
-        """
-        try:
-            print('\nget_agent() result:')
-
-            # begin-get_agent
-
-            response = schematics_service.get_agent(
-                agent_id='testString',
-            )
-            agent = response.get_result()
-
-            print(json.dumps(agent, indent=2))
-
-            # end-get_agent
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_update_agent_registration_example(self):
-        """
-        update_agent_registration request example
-        """
-        try:
-            print('\nupdate_agent_registration() result:')
-
-            # begin-update_agent_registration
-
-            response = schematics_service.update_agent_registration(
-                agent_id='testString',
-                name='MyDevAgent',
-                agent_location='us-south',
-                location='us-south',
-                profile_id='testString',
-            )
-            agent = response.get_result()
-
-            print(json.dumps(agent, indent=2))
-
-            # end-update_agent_registration
+            # end-replace_resources_query
 
         except ApiException as e:
             pytest.fail(str(e))
@@ -1360,15 +1512,40 @@ class TestSchematicsV1Examples:
 
             # begin-create_agent_data
 
-            agent_infrastructure_model = {}
+            agent_infrastructure_model = {
+                'infra_type': 'ibm_kubernetes',
+                'cluster_id': 'cluster_id',
+                'cluster_resource_group': 'Default',
+                'cos_instance_name': 'blueprint_basic',
+                'cos_bucket_name': 'sample_bucket_name',
+                'cos_bucket_region': 'us-east',
+            }
+
+            variable_metadata_model = {
+                'secure': True,
+            }
+
+            variable_data_model = {
+                'name': 'ibmcloud_api_key',
+                'value': '<api_key of the account where cluster and cos are present>',
+                'metadata': variable_metadata_model,
+            }
+
+            agent_user_state_model = {
+                'state': 'enable',
+            }
 
             response = schematics_service.create_agent_data(
-                name='MyDevAgent',
+                name='AgentName',
                 resource_group='Default',
                 version='v1.0.0',
                 schematics_location='us-south',
                 agent_location='us-south',
                 agent_infrastructure=agent_infrastructure_model,
+                description='Create Agent',
+                tags=['tag1', 'tag2'],
+                agent_inputs=[variable_data_model],
+                user_state=agent_user_state_model,
             )
             agent_data = response.get_result()
 
@@ -1411,16 +1588,41 @@ class TestSchematicsV1Examples:
 
             # begin-update_agent_data
 
-            agent_infrastructure_model = {}
+            agent_infrastructure_model = {
+                'infra_type': 'ibm_kubernetes',
+                'cluster_id': 'cluster_id',
+                'cluster_resource_group': 'Default',
+                'cos_instance_name': 'blueprint_basic',
+                'cos_bucket_name': 'sample_bucket_name',
+                'cos_bucket_region': 'us-east',
+            }
+
+            variable_metadata_model = {
+                'secure': True,
+            }
+
+            variable_data_model = {
+                'name': 'ibmcloud_api_key',
+                'value': '<api_key of the account where cluster and cos are present>',
+                'metadata': variable_metadata_model,
+            }
+
+            agent_user_state_model = {
+                'state': 'enable',
+            }
 
             response = schematics_service.update_agent_data(
                 agent_id='testString',
-                name='MyDevAgent',
+                name='AgentName',
                 resource_group='Default',
                 version='v1.0.0',
                 schematics_location='us-south',
                 agent_location='us-south',
                 agent_infrastructure=agent_infrastructure_model,
+                description='New Description',
+                tags=['tag1', 'tag2'],
+                agent_inputs=[variable_data_model],
+                user_state=agent_user_state_model,
             )
             agent_data = response.get_result()
 
@@ -1452,28 +1654,6 @@ class TestSchematicsV1Examples:
             pytest.fail(str(e))
 
     @needscredentials
-    def test_get_prs_agent_job_example(self):
-        """
-        get_prs_agent_job request example
-        """
-        try:
-            print('\nget_prs_agent_job() result:')
-
-            # begin-get_prs_agent_job
-
-            response = schematics_service.get_prs_agent_job(
-                agent_id='testString',
-            )
-            agent_prs_job = response.get_result()
-
-            print(json.dumps(agent_prs_job, indent=2))
-
-            # end-get_prs_agent_job
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
     def test_prs_agent_job_example(self):
         """
         prs_agent_job request example
@@ -1496,28 +1676,6 @@ class TestSchematicsV1Examples:
             pytest.fail(str(e))
 
     @needscredentials
-    def test_get_health_check_agent_job_example(self):
-        """
-        get_health_check_agent_job request example
-        """
-        try:
-            print('\nget_health_check_agent_job() result:')
-
-            # begin-get_health_check_agent_job
-
-            response = schematics_service.get_health_check_agent_job(
-                agent_id='testString',
-            )
-            agent_health_job = response.get_result()
-
-            print(json.dumps(agent_health_job, indent=2))
-
-            # end-get_health_check_agent_job
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
     def test_health_check_agent_job_example(self):
         """
         health_check_agent_job request example
@@ -1535,28 +1693,6 @@ class TestSchematicsV1Examples:
             print(json.dumps(agent_health_job, indent=2))
 
             # end-health_check_agent_job
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
-    def test_get_deploy_agent_job_example(self):
-        """
-        get_deploy_agent_job request example
-        """
-        try:
-            print('\nget_deploy_agent_job() result:')
-
-            # begin-get_deploy_agent_job
-
-            response = schematics_service.get_deploy_agent_job(
-                agent_id='testString',
-            )
-            agent_deploy_job = response.get_result()
-
-            print(json.dumps(agent_deploy_job, indent=2))
-
-            # end-get_deploy_agent_job
 
         except ApiException as e:
             pytest.fail(str(e))
@@ -1615,7 +1751,18 @@ class TestSchematicsV1Examples:
 
             # begin-update_kms_settings
 
-            response = schematics_service.update_kms_settings()
+            kms_settings_primary_crk_model = {
+                'kms_name': 'Key Protect-xxx',
+                'kms_private_endpoint': 'https://private.us-south.kms.cloud.ibm.com',
+                'key_crn': 'crn:v1:public:kms:us-south:a/010101010:key:3a14ceaf-c679-455d-10101010',
+            }
+
+            response = schematics_service.update_kms_settings(
+                location='US',
+                encryption_scheme='byok',
+                resource_group='Default',
+                primary_crk=kms_settings_primary_crk_model,
+            )
             kms_settings = response.get_result()
 
             print(json.dumps(kms_settings, indent=2))
@@ -1678,7 +1825,14 @@ class TestSchematicsV1Examples:
 
             # begin-create_policy
 
-            response = schematics_service.create_policy()
+            response = schematics_service.create_policy(
+                kind='agent_assignment_policy',
+                name='new-policy-dev',
+                description='Policy for job execution of secured workspaces on agent1',
+                resource_group='Default',
+                tags=['policy:secured-job'],
+                location='us-south',
+            )
             policy = response.get_result()
 
             print(json.dumps(policy, indent=2))
@@ -1722,6 +1876,12 @@ class TestSchematicsV1Examples:
 
             response = schematics_service.update_policy(
                 policy_id='testString',
+                kind='agent_assignment_policy',
+                name='new-policy-dev',
+                description='Policy for job execution of secured workspaces on agent1 updated',
+                resource_group='Default',
+                tags=['policy:secured-job'],
+                location='us-south',
             )
             policy = response.get_result()
 
@@ -1743,8 +1903,8 @@ class TestSchematicsV1Examples:
             # begin-delete_workspace
 
             response = schematics_service.delete_workspace(
-                refresh_token='testString',
                 w_id='testString',
+                refresh_token='testString',
             )
             workspace_delete_response = response.get_result()
 
@@ -1852,24 +2012,6 @@ class TestSchematicsV1Examples:
             pytest.fail(str(e))
 
     @needscredentials
-    def test_delete_agent_example(self):
-        """
-        delete_agent request example
-        """
-        try:
-            # begin-delete_agent
-
-            response = schematics_service.delete_agent(
-                agent_id='testString',
-            )
-
-            # end-delete_agent
-            print('\ndelete_agent() response status code: ', response.get_status_code())
-
-        except ApiException as e:
-            pytest.fail(str(e))
-
-    @needscredentials
     def test_delete_agent_data_example(self):
         """
         delete_agent_data request example
@@ -1893,15 +2035,19 @@ class TestSchematicsV1Examples:
         delete_agent_resources request example
         """
         try:
+            print('\ndelete_agent_resources() result:')
+
             # begin-delete_agent_resources
 
             response = schematics_service.delete_agent_resources(
                 agent_id='testString',
                 refresh_token='testString',
             )
+            delete_agent_resources202_response = response.get_result()
+
+            print(json.dumps(delete_agent_resources202_response, indent=2))
 
             # end-delete_agent_resources
-            print('\ndelete_agent_resources() response status code: ', response.get_status_code())
 
         except ApiException as e:
             pytest.fail(str(e))

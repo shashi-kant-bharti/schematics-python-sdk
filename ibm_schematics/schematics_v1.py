@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# (C) Copyright IBM Corp. 2024.
+# (C) Copyright IBM Corp. 2026.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# IBM OpenAPI SDK Code Generator Version: 3.96.1-5136e54a-20241108-203028
+# IBM OpenAPI SDK Code Generator Version: 3.114.2-b2884bfd-20260601-185447
 
 """
 IBM Cloud Schematics service is to provide the capability to manage resources  of cloud
@@ -63,7 +63,9 @@ class SchematicsV1(BaseService):
                parameters and external configuration.
         """
         authenticator = get_authenticator_from_environment(service_name)
-        service = cls(authenticator)
+        service = cls(
+            authenticator
+            )
         service.configure_service(service_name)
         return service
 
@@ -83,49 +85,6 @@ class SchematicsV1(BaseService):
     #########################
     # util
     #########################
-
-    def list_schematics_location(
-        self,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        List supported schematics locations.
-
-        Retrieve a list of IBM Cloud locations where you can create the Schematics
-        workspace or action. workspaces.
-          <h3>Authorization</h3>
-          Schematics support generic authorization for its resources.
-          For more information, about Schematics access and permissions,
-          see [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `List[SchematicsLocations]` result
-        """
-
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='list_schematics_location',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        url = '/v1/locations'
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
 
     def list_locations(
         self,
@@ -329,6 +288,154 @@ class SchematicsV1(BaseService):
     #########################
     # workspaces
     #########################
+
+    def get_workspace_resources_v2(
+        self,
+        w_id: str,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        List workspace resources.
+
+        Retrieve a list of IBM Cloud resources that you created with your workspace.
+
+        :param str w_id: The ID of the workspace.  To find the workspace ID, use
+               the `GET /v1/workspaces` API.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `TemplateResourcesObject` object
+        """
+
+        if not w_id:
+            raise ValueError('w_id must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='get_workspace_resources_v2',
+        )
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['w_id']
+        path_param_values = self.encode_path_vars(w_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/workspaces/{w_id}/resources'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='GET',
+            url=url,
+            headers=headers,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
+    def get_workspace_outputs_v2(
+        self,
+        w_id: str,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        List workspace output values.
+
+        Retrieve a list of Terraform output variables. You define output values in your
+        Terraform template to include information that you want to make accessible for
+        other Terraform templates.
+
+        :param str w_id: The ID of the workspace for which you want to retrieve
+               output parameters and  values. To find the workspace ID, use the `GET
+               /workspaces` API.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `OutputValuesObject` object
+        """
+
+        if not w_id:
+            raise ValueError('w_id must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='get_workspace_outputs_v2',
+        )
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['w_id']
+        path_param_values = self.encode_path_vars(w_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/workspaces/{w_id}/output_values'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='GET',
+            url=url,
+            headers=headers,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
+    def get_workspace_input_metadata_v2(
+        self,
+        w_id: str,
+        t_id: str,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        List workspace variable metadata.
+
+        Retrieve the metadata for all the workspace input variables that are declared in
+        the template that your workspace points to.
+
+        :param str w_id: The ID of the workspace for which you want to retrieve the
+               metadata of the input variables that are declared in the template. To find
+               the workspace ID, use the `GET /v1/workspaces` API.
+        :param str t_id: The ID of the Terraform template for which you want to
+               retrieve the metadata of your input variables. When you create a workspace,
+               the Terraform template that your workspace points to is assigned a unique
+               ID. To find this ID, use the `GET /v1/workspaces` API and review the
+               `template_data.id` value.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `TemplateValuesMetaData` object
+        """
+
+        if not w_id:
+            raise ValueError('w_id must be provided')
+        if not t_id:
+            raise ValueError('t_id must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='get_workspace_input_metadata_v2',
+        )
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['w_id', 't_id']
+        path_param_values = self.encode_path_vars(w_id, t_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/workspaces/{w_id}/template_data/{t_id}/values_metadata'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='GET',
+            url=url,
+            headers=headers,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
 
     def list_workspaces(
         self,
@@ -577,6 +684,102 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
+    def delete_workspace(
+        self,
+        w_id: str,
+        refresh_token: str,
+        *,
+        destroy_resources: Optional[str] = None,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Delete a workspace.
+
+        Deletes a workspace from IBM Cloud Schematics. Deleting a workspace does not
+        automatically remove the IBM Cloud resources that the workspace manages. To remove
+        all resources that are associated with the workspace, use the `DELETE
+        /v1/workspaces/{id}?destroy_resources=true` API.
+         **Note**: If you delete a workspace without deleting the resources,
+         you must manage your resources with the resource dashboard or CLI afterwards.
+         You cannot use IBM Cloud Schematics anymore to manage your resources.
+         <h3>Authorization</h3>
+         Schematics support generic authorization for its resources.
+         For more information, about Schematics access and permissions,
+         see [Schematics service access roles and required
+        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
+
+        :param str w_id: The ID of the workspace.  To find the workspace ID, use
+               the `GET /v1/workspaces` API.
+        :param str refresh_token: The IAM refresh token for the user or service
+               identity. The IAM refresh token is required only if you want to destroy the
+               Terraform resources before deleting the Schematics workspace. If you want
+               to delete the workspace only and keep all your Terraform resources, refresh
+               token is not required.
+                 **Retrieving refresh token**:
+                 * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               application/x-www-form-urlencoded" -d
+               "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
+               -u bx:bx`.
+                 * For more information, about creating IAM access token and API Docs,
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
+                 **Limitation**:
+                 * If the token is expired, you can use `refresh token` to get a new IAM
+               access token.
+                 * The `refresh_token` parameter cannot be used to retrieve a new IAM
+               access token.
+                 * When the IAM access token is about to expire, use the API key to create
+               a new access token.
+        :param str destroy_resources: (optional) If set to `true`, refresh_token
+               header configuration is required to delete all the Terraform resources, and
+               the Schematics workspace. If set to `false`, you can remove only the
+               workspace. Your Terraform resources are still available and must be managed
+               with the resource dashboard or CLI.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `str` result
+        """
+
+        if not w_id:
+            raise ValueError('w_id must be provided')
+        if not refresh_token:
+            raise ValueError('refresh_token must be provided')
+        headers = {
+            'refresh_token': refresh_token,
+        }
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='delete_workspace',
+        )
+        headers.update(sdk_headers)
+
+        params = {
+            'destroy_resources': destroy_resources,
+        }
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['w_id']
+        path_param_values = self.encode_path_vars(w_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v1/workspaces/{w_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='DELETE',
+            url=url,
+            headers=headers,
+            params=params,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
     def get_workspace(
         self,
         w_id: str,
@@ -623,6 +826,140 @@ class SchematicsV1(BaseService):
             method='GET',
             url=url,
             headers=headers,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
+    def update_workspace(
+        self,
+        w_id: str,
+        *,
+        catalog_ref: Optional['CatalogRef'] = None,
+        description: Optional[str] = None,
+        dependencies: Optional['Dependencies'] = None,
+        name: Optional[str] = None,
+        shared_data: Optional['SharedTargetData'] = None,
+        tags: Optional[List[str]] = None,
+        template_data: Optional[List['TemplateSourceDataRequest']] = None,
+        template_repo: Optional['TemplateRepoUpdateRequest'] = None,
+        type: Optional[List[str]] = None,
+        workspace_status: Optional['WorkspaceStatusUpdateRequest'] = None,
+        workspace_status_msg: Optional['WorkspaceStatusMessage'] = None,
+        agent_id: Optional[str] = None,
+        settings: Optional[List['VariableData']] = None,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Update workspace metadata.
+
+        Use this API to update the following workspace metadata:
+         * Workspace name (`name`) - **Note**: Updating the workspace name does not update
+        the ID of the workspace.
+         * Workspace description (`description`)
+         * Tags (`tags[]`)
+         * Resource group (`resource_group`)
+         * Workspace status (`workspace_status.frozen`)
+         **Tip**: If you want to update information about the Terraform template
+         or IBM Cloud catalog software template that your workspace points to,
+         use the `PUT /v1/workspaces/{id}` API. To update workspace variables,
+         use the `PUT /v1/workspaces/{id}/template_data/{template_id}/values` API.
+         <h3>Authorization</h3>
+         Schematics support generic authorization for its resources.
+         For more information, about Schematics access and permissions,
+         see [Schematics service access roles and required
+        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
+
+        :param str w_id: The ID of the workspace.  To find the workspace ID, use
+               the `GET /v1/workspaces` API.
+        :param CatalogRef catalog_ref: (optional) Information about the software
+               template that you chose from the IBM Cloud catalog. This information is
+               returned for IBM Cloud catalog offerings only.
+        :param str description: (optional) The description of the workspace.
+        :param Dependencies dependencies: (optional) Workspace dependencies.
+        :param str name: (optional) The name of the workspace.
+        :param SharedTargetData shared_data: (optional) Information about the
+               Target used by the templates originating from the  IBM Cloud catalog
+               offerings. This information is not relevant for workspace created using
+               your own Terraform template.
+        :param List[str] tags: (optional) A list of tags that you want to associate
+               with your workspace.
+        :param List[TemplateSourceDataRequest] template_data: (optional) Input data
+               for the Template.
+        :param TemplateRepoUpdateRequest template_repo: (optional) Input to update
+               the template repository data.
+        :param List[str] type: (optional) List of Workspace type.
+        :param WorkspaceStatusUpdateRequest workspace_status: (optional) Input to
+               update the workspace status.
+        :param WorkspaceStatusMessage workspace_status_msg: (optional) Information
+               about the last job that ran against the workspace. -.
+        :param str agent_id: (optional) agent id that process workspace jobs.
+        :param List[VariableData] settings: (optional) Input settings to be applied
+               to the workspace, for example, `job_timeout_override`.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `WorkspaceResponse` object
+        """
+
+        if not w_id:
+            raise ValueError('w_id must be provided')
+        if catalog_ref is not None:
+            catalog_ref = convert_model(catalog_ref)
+        if dependencies is not None:
+            dependencies = convert_model(dependencies)
+        if shared_data is not None:
+            shared_data = convert_model(shared_data)
+        if template_data is not None:
+            template_data = [convert_model(x) for x in template_data]
+        if template_repo is not None:
+            template_repo = convert_model(template_repo)
+        if workspace_status is not None:
+            workspace_status = convert_model(workspace_status)
+        if workspace_status_msg is not None:
+            workspace_status_msg = convert_model(workspace_status_msg)
+        if settings is not None:
+            settings = [convert_model(x) for x in settings]
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='update_workspace',
+        )
+        headers.update(sdk_headers)
+
+        data = {
+            'catalog_ref': catalog_ref,
+            'description': description,
+            'dependencies': dependencies,
+            'name': name,
+            'shared_data': shared_data,
+            'tags': tags,
+            'template_data': template_data,
+            'template_repo': template_repo,
+            'type': type,
+            'workspace_status': workspace_status,
+            'workspace_status_msg': workspace_status_msg,
+            'agent_id': agent_id,
+            'settings': settings,
+        }
+        data = {k: v for (k, v) in data.items() if v is not None}
+        data = json.dumps(data)
+        headers['content-type'] = 'application/json'
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['w_id']
+        path_param_values = self.encode_path_vars(w_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v1/workspaces/{w_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='PATCH',
+            url=url,
+            headers=headers,
+            data=data,
         )
 
         response = self.send(request, **kwargs)
@@ -756,235 +1093,6 @@ class SchematicsV1(BaseService):
         url = '/v1/workspaces/{w_id}'.format(**path_param_dict)
         request = self.prepare_request(
             method='PUT',
-            url=url,
-            headers=headers,
-            data=data,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def delete_workspace(
-        self,
-        refresh_token: str,
-        w_id: str,
-        *,
-        destroy_resources: Optional[str] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Delete a workspace.
-
-        Deletes a workspace from IBM Cloud Schematics. Deleting a workspace does not
-        automatically remove the IBM Cloud resources that the workspace manages. To remove
-        all resources that are associated with the workspace, use the `DELETE
-        /v1/workspaces/{id}?destroy_resources=true` API.
-         **Note**: If you delete a workspace without deleting the resources,
-         you must manage your resources with the resource dashboard or CLI afterwards.
-         You cannot use IBM Cloud Schematics anymore to manage your resources.
-         <h3>Authorization</h3>
-         Schematics support generic authorization for its resources.
-         For more information, about Schematics access and permissions,
-         see [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str refresh_token: The IAM refresh token for the user or service
-               identity. The IAM refresh token is required only if you want to destroy the
-               Terraform resources before deleting the Schematics workspace. If you want
-               to delete the workspace only and keep all your Terraform resources, refresh
-               token is not required.
-                 **Retrieving refresh token**:
-                 * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
-               application/x-www-form-urlencoded" -d
-               "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
-               -u bx:bx`.
-                 * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
-                 **Limitation**:
-                 * If the token is expired, you can use `refresh token` to get a new IAM
-               access token.
-                 * The `refresh_token` parameter cannot be used to retrieve a new IAM
-               access token.
-                 * When the IAM access token is about to expire, use the API key to create
-               a new access token.
-        :param str w_id: The ID of the workspace.  To find the workspace ID, use
-               the `GET /v1/workspaces` API.
-        :param str destroy_resources: (optional) If set to `true`, refresh_token
-               header configuration is required to delete all the Terraform resources, and
-               the Schematics workspace. If set to `false`, you can remove only the
-               workspace. Your Terraform resources are still available and must be managed
-               with the resource dashboard or CLI.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `str` result
-        """
-
-        if not refresh_token:
-            raise ValueError('refresh_token must be provided')
-        if not w_id:
-            raise ValueError('w_id must be provided')
-        headers = {
-            'refresh_token': refresh_token,
-        }
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='delete_workspace',
-        )
-        headers.update(sdk_headers)
-
-        params = {
-            'destroy_resources': destroy_resources,
-        }
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['w_id']
-        path_param_values = self.encode_path_vars(w_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v1/workspaces/{w_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='DELETE',
-            url=url,
-            headers=headers,
-            params=params,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def update_workspace(
-        self,
-        w_id: str,
-        *,
-        catalog_ref: Optional['CatalogRef'] = None,
-        description: Optional[str] = None,
-        dependencies: Optional['Dependencies'] = None,
-        name: Optional[str] = None,
-        shared_data: Optional['SharedTargetData'] = None,
-        tags: Optional[List[str]] = None,
-        template_data: Optional[List['TemplateSourceDataRequest']] = None,
-        template_repo: Optional['TemplateRepoUpdateRequest'] = None,
-        type: Optional[List[str]] = None,
-        workspace_status: Optional['WorkspaceStatusUpdateRequest'] = None,
-        workspace_status_msg: Optional['WorkspaceStatusMessage'] = None,
-        agent_id: Optional[str] = None,
-        settings: Optional[List['VariableData']] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Update workspace metadata.
-
-        Use this API to update the following workspace metadata:
-         * Workspace name (`name`) - **Note**: Updating the workspace name does not update
-        the ID of the workspace.
-         * Workspace description (`description`)
-         * Tags (`tags[]`)
-         * Resource group (`resource_group`)
-         * Workspace status (`workspace_status.frozen`)
-         **Tip**: If you want to update information about the Terraform template
-         or IBM Cloud catalog software template that your workspace points to,
-         use the `PUT /v1/workspaces/{id}` API. To update workspace variables,
-         use the `PUT /v1/workspaces/{id}/template_data/{template_id}/values` API.
-         <h3>Authorization</h3>
-         Schematics support generic authorization for its resources.
-         For more information, about Schematics access and permissions,
-         see [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str w_id: The ID of the workspace.  To find the workspace ID, use
-               the `GET /v1/workspaces` API.
-        :param CatalogRef catalog_ref: (optional) Information about the software
-               template that you chose from the IBM Cloud catalog. This information is
-               returned for IBM Cloud catalog offerings only.
-        :param str description: (optional) The description of the workspace.
-        :param Dependencies dependencies: (optional) Workspace dependencies.
-        :param str name: (optional) The name of the workspace.
-        :param SharedTargetData shared_data: (optional) Information about the
-               Target used by the templates originating from the  IBM Cloud catalog
-               offerings. This information is not relevant for workspace created using
-               your own Terraform template.
-        :param List[str] tags: (optional) A list of tags that you want to associate
-               with your workspace.
-        :param List[TemplateSourceDataRequest] template_data: (optional) Input data
-               for the Template.
-        :param TemplateRepoUpdateRequest template_repo: (optional) Input to update
-               the template repository data.
-        :param List[str] type: (optional) List of Workspace type.
-        :param WorkspaceStatusUpdateRequest workspace_status: (optional) Input to
-               update the workspace status.
-        :param WorkspaceStatusMessage workspace_status_msg: (optional) Information
-               about the last job that ran against the workspace. -.
-        :param str agent_id: (optional) agent id that process workspace jobs.
-        :param List[VariableData] settings: (optional) Input settings to be applied
-               to the workspace, for example, `job_timeout_override`.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `WorkspaceResponse` object
-        """
-
-        if not w_id:
-            raise ValueError('w_id must be provided')
-        if catalog_ref is not None:
-            catalog_ref = convert_model(catalog_ref)
-        if dependencies is not None:
-            dependencies = convert_model(dependencies)
-        if shared_data is not None:
-            shared_data = convert_model(shared_data)
-        if template_data is not None:
-            template_data = [convert_model(x) for x in template_data]
-        if template_repo is not None:
-            template_repo = convert_model(template_repo)
-        if workspace_status is not None:
-            workspace_status = convert_model(workspace_status)
-        if workspace_status_msg is not None:
-            workspace_status_msg = convert_model(workspace_status_msg)
-        if settings is not None:
-            settings = [convert_model(x) for x in settings]
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='update_workspace',
-        )
-        headers.update(sdk_headers)
-
-        data = {
-            'catalog_ref': catalog_ref,
-            'description': description,
-            'dependencies': dependencies,
-            'name': name,
-            'shared_data': shared_data,
-            'tags': tags,
-            'template_data': template_data,
-            'template_repo': template_repo,
-            'type': type,
-            'workspace_status': workspace_status,
-            'workspace_status_msg': workspace_status_msg,
-            'agent_id': agent_id,
-            'settings': settings,
-        }
-        data = {k: v for (k, v) in data.items() if v is not None}
-        data = json.dumps(data)
-        headers['content-type'] = 'application/json'
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['w_id']
-        path_param_values = self.encode_path_vars(w_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v1/workspaces/{w_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='PATCH',
             url=url,
             headers=headers,
             data=data,
@@ -1331,8 +1439,11 @@ class SchematicsV1(BaseService):
         """
         List workspace variable metadata.
 
-        Retrieve the metadata for all the workspace input variables that are declared in
-        the template that your workspace points to.
+        **Deprecated**: This v1 API will be decommissioned within 12 months. Please
+        migrate to the v2 API: `GET
+        /v2/workspaces/{w_id}/template_data/{t_id}/values_metadata`. Retrieve the metadata
+        for all the workspace input variables that are declared in the template that your
+        workspace points to.
 
         :param str w_id: The ID of the workspace for which you want to retrieve the
                metadata of the input variables that are declared in the template. To find
@@ -1345,7 +1456,11 @@ class SchematicsV1(BaseService):
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `List[dict]` result
+
+        Deprecated: this method is deprecated and may be removed in a future release.
         """
+
+        logging.warning('A deprecated operation has been invoked: get_workspace_input_metadata')
 
         if not w_id:
             raise ValueError('w_id must be provided')
@@ -1385,9 +1500,11 @@ class SchematicsV1(BaseService):
         """
         List workspace output values.
 
-        Retrieve a list of Terraform output variables. You define output values in your
-        Terraform template to include information that you want to make accessible for
-        other Terraform templates.
+        **Deprecated**: This v1 API will be decommissioned within 12 months. Please
+        migrate to the v2 API: `GET /v2/workspaces/{w_id}/output_values`. Retrieve a list
+        of Terraform output variables. You define output values in your Terraform template
+        to include information that you want to make accessible for other Terraform
+        templates.
 
         :param str w_id: The ID of the workspace for which you want to retrieve
                output parameters and  values. To find the workspace ID, use the `GET
@@ -1395,7 +1512,11 @@ class SchematicsV1(BaseService):
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `List[OutputValuesInner]` result
+
+        Deprecated: this method is deprecated and may be removed in a future release.
         """
+
+        logging.warning('A deprecated operation has been invoked: get_workspace_outputs')
 
         if not w_id:
             raise ValueError('w_id must be provided')
@@ -1433,14 +1554,20 @@ class SchematicsV1(BaseService):
         """
         List workspace resources.
 
-        Retrieve a list of IBM Cloud resources that you created with your workspace.
+        **Deprecated**: This v1 API will be decommissioned within 12 months. Please
+        migrate to the v2 API: `GET /v2/workspaces/{w_id}/resources`. Retrieve a list of
+        IBM Cloud resources that you created with your workspace.
 
         :param str w_id: The ID of the workspace.  To find the workspace ID, use
                the `GET /v1/workspaces` API.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `List[TemplateResources]` result
+
+        Deprecated: this method is deprecated and may be removed in a future release.
         """
+
+        logging.warning('A deprecated operation has been invoked: get_workspace_resources')
 
         if not w_id:
             raise ValueError('w_id must be provided')
@@ -2132,66 +2259,6 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
-    def get_action(
-        self,
-        action_id: str,
-        *,
-        profile: Optional[str] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Get action details.
-
-        Retrieve the detailed information of an actions from your IBM Cloud account.  This
-        API returns a URL to the log file that you can retrieve by using  the `GET
-        /v2/actions/{action_id}/logs` API.
-         <h3>Authorization</h3>
-         Schematics support generic authorization for its resources.
-         For more information, about Schematics access and permissions, see
-         [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#action-permissions).
-
-        :param str action_id: Action Id.  Use GET /actions API to look up the
-               Action Ids in your IBM Cloud account.
-        :param str profile: (optional) Level of details returned by the get method.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Action` object
-        """
-
-        if not action_id:
-            raise ValueError('action_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='get_action',
-        )
-        headers.update(sdk_headers)
-
-        params = {
-            'profile': profile,
-        }
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['action_id']
-        path_param_values = self.encode_path_vars(action_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/actions/{action_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
-            params=params,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
     def delete_action(
         self,
         action_id: str,
@@ -2251,6 +2318,66 @@ class SchematicsV1(BaseService):
             method='DELETE',
             url=url,
             headers=headers,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
+    def get_action(
+        self,
+        action_id: str,
+        *,
+        profile: Optional[str] = None,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Get action details.
+
+        Retrieve the detailed information of an actions from your IBM Cloud account.  This
+        API returns a URL to the log file that you can retrieve by using  the `GET
+        /v2/actions/{action_id}/logs` API.
+         <h3>Authorization</h3>
+         Schematics support generic authorization for its resources.
+         For more information, about Schematics access and permissions, see
+         [Schematics service access roles and required
+        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#action-permissions).
+
+        :param str action_id: Action Id.  Use GET /actions API to look up the
+               Action Ids in your IBM Cloud account.
+        :param str profile: (optional) Level of details returned by the get method.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `Action` object
+        """
+
+        if not action_id:
+            raise ValueError('action_id must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='get_action',
+        )
+        headers.update(sdk_headers)
+
+        params = {
+            'profile': profile,
+        }
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['action_id']
+        path_param_values = self.encode_path_vars(action_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/actions/{action_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='GET',
+            url=url,
+            headers=headers,
+            params=params,
         )
 
         response = self.send(request, **kwargs)
@@ -2567,59 +2694,6 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
-    def get_workspace_activity(
-        self,
-        w_id: str,
-        activity_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Get workspace job details.
-
-        Get the details for a workspace job that ran against the workspace. This API
-        returns the job status and a URL to the log file that you can  retrieve by using
-        the `GET /v1/workspaces/{id}/actions/{action_id}/logs` API.
-
-        :param str w_id: The ID of the workspace.  To find the workspace ID, use
-               the `GET /v1/workspaces` API.
-        :param str activity_id: The ID of the activity or job, for which you want
-               to retrieve details.  To find the job ID, use the `GET
-               /v1/workspaces/{id}/actions` API.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `WorkspaceActivity` object
-        """
-
-        if not w_id:
-            raise ValueError('w_id must be provided')
-        if not activity_id:
-            raise ValueError('activity_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='get_workspace_activity',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['w_id', 'activity_id']
-        path_param_values = self.encode_path_vars(w_id, activity_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v1/workspaces/{w_id}/actions/{activity_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
     def delete_workspace_activity(
         self,
         w_id: str,
@@ -2682,6 +2756,59 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
+    def get_workspace_activity(
+        self,
+        w_id: str,
+        activity_id: str,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Get workspace job details.
+
+        Get the details for a workspace job that ran against the workspace. This API
+        returns the job status and a URL to the log file that you can  retrieve by using
+        the `GET /v1/workspaces/{id}/actions/{action_id}/logs` API.
+
+        :param str w_id: The ID of the workspace.  To find the workspace ID, use
+               the `GET /v1/workspaces` API.
+        :param str activity_id: The ID of the activity or job, for which you want
+               to retrieve details.  To find the job ID, use the `GET
+               /v1/workspaces/{id}/actions` API.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse with `dict` result representing a `WorkspaceActivity` object
+        """
+
+        if not w_id:
+            raise ValueError('w_id must be provided')
+        if not activity_id:
+            raise ValueError('activity_id must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='get_workspace_activity',
+        )
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['w_id', 'activity_id']
+        path_param_values = self.encode_path_vars(w_id, activity_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v1/workspaces/{w_id}/actions/{activity_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='GET',
+            url=url,
+            headers=headers,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
     def run_workspace_commands(
         self,
         w_id: str,
@@ -2709,14 +2836,15 @@ class SchematicsV1(BaseService):
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -2781,8 +2909,8 @@ class SchematicsV1(BaseService):
 
     def apply_workspace_command(
         self,
-        w_id: str,
         refresh_token: str,
+        w_id: str,
         *,
         action_options: Optional['WorkspaceActivityOptionsTemplate'] = None,
         delegated_token: Optional[str] = None,
@@ -2819,21 +2947,19 @@ class SchematicsV1(BaseService):
          see [Schematics service access roles and required
         permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
 
-        :param str w_id: The ID of the workspace for which you want to run a
-               Schematics `apply` job.  To find the workspace ID, use the `GET
-               /workspaces` API.
         :param str refresh_token: The IAM refresh token for the user or service
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -2841,6 +2967,9 @@ class SchematicsV1(BaseService):
                access token.
                  * When the IAM access token is about to expire, use the API key to create
                a new access token.
+        :param str w_id: The ID of the workspace for which you want to run a
+               Schematics `apply` job.  To find the workspace ID, use the `GET
+               /workspaces` API.
         :param WorkspaceActivityOptionsTemplate action_options: (optional)
                Workspace job options template.
         :param str delegated_token: (optional) The IAM delegated token for your IBM
@@ -2851,10 +2980,10 @@ class SchematicsV1(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `WorkspaceActivityApplyResult` object
         """
 
-        if not w_id:
-            raise ValueError('w_id must be provided')
         if not refresh_token:
             raise ValueError('refresh_token must be provided')
+        if not w_id:
+            raise ValueError('w_id must be provided')
         if action_options is not None:
             action_options = convert_model(action_options)
         headers = {
@@ -2896,8 +3025,8 @@ class SchematicsV1(BaseService):
 
     def destroy_workspace_command(
         self,
-        w_id: str,
         refresh_token: str,
+        w_id: str,
         *,
         action_options: Optional['WorkspaceActivityOptionsTemplate'] = None,
         delegated_token: Optional[str] = None,
@@ -2922,21 +3051,19 @@ class SchematicsV1(BaseService):
          see [Schematics service access roles and required
         permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
 
-        :param str w_id: The ID of the workspace for which you want to perform a
-               Schematics `destroy` job.  To find the workspace ID, use the `GET
-               /workspaces` API.
         :param str refresh_token: The IAM refresh token for the user or service
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -2944,6 +3071,9 @@ class SchematicsV1(BaseService):
                access token.
                  * When the IAM access token is about to expire, use the API key to create
                a new access token.
+        :param str w_id: The ID of the workspace for which you want to perform a
+               Schematics `destroy` job.  To find the workspace ID, use the `GET
+               /workspaces` API.
         :param WorkspaceActivityOptionsTemplate action_options: (optional)
                Workspace job options template.
         :param str delegated_token: (optional) The IAM delegated token for your IBM
@@ -2954,10 +3084,10 @@ class SchematicsV1(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `WorkspaceActivityDestroyResult` object
         """
 
-        if not w_id:
-            raise ValueError('w_id must be provided')
         if not refresh_token:
             raise ValueError('refresh_token must be provided')
+        if not w_id:
+            raise ValueError('w_id must be provided')
         if action_options is not None:
             action_options = convert_model(action_options)
         headers = {
@@ -3032,14 +3162,15 @@ class SchematicsV1(BaseService):
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -3130,14 +3261,15 @@ class SchematicsV1(BaseService):
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -3308,14 +3440,15 @@ class SchematicsV1(BaseService):
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -3420,6 +3553,93 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
+    def delete_job(
+        self,
+        job_id: str,
+        refresh_token: str,
+        *,
+        force: Optional[bool] = None,
+        propagate: Optional[bool] = None,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Stop the running Job, and delete the Job.
+
+        Stop the running Job, and delete the Job.  **Note** You cannot delete or stop the
+        job activity from an ongoing  execution of an action defined in the playbook.  You
+        can repeat the execution of same job, whenever you patch or update the action or
+        workspace.
+         <h3>Authorization</h3>
+         Schematics support generic authorization for its resources.
+         For more information, about Schematics access and permissions, see
+         [Schematics service access roles and required
+        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
+
+        :param str job_id: Job Id. Use `GET /v2/jobs` API to look up the Job Ids in
+               your IBM Cloud account.
+        :param str refresh_token: The IAM refresh token for the user or service
+               identity.
+                 **Retrieving refresh token**:
+                 * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               application/x-www-form-urlencoded" -d
+               "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
+               -u bx:bx`.
+                 * For more information, about creating IAM access token and API Docs,
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
+                 **Limitation**:
+                 * If the token is expired, you can use `refresh token` to get a new IAM
+               access token.
+                 * The `refresh_token` parameter cannot be used to retrieve a new IAM
+               access token.
+                 * When the IAM access token is about to expire, use the API key to create
+               a new access token.
+        :param bool force: (optional) Equivalent to -force options in the command
+               line.
+        :param bool propagate: (optional) Auto propagate the chaange or deletion to
+               the dependent resources.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse
+        """
+
+        if not job_id:
+            raise ValueError('job_id must be provided')
+        if not refresh_token:
+            raise ValueError('refresh_token must be provided')
+        headers = {
+            'refresh_token': refresh_token,
+            'force': force,
+            'propagate': propagate,
+        }
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='delete_job',
+        )
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['job_id']
+        path_param_values = self.encode_path_vars(job_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/jobs/{job_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='DELETE',
+            url=url,
+            headers=headers,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
     def get_job(
         self,
         job_id: str,
@@ -3517,14 +3737,15 @@ class SchematicsV1(BaseService):
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -3629,91 +3850,6 @@ class SchematicsV1(BaseService):
             url=url,
             headers=headers,
             data=data,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def delete_job(
-        self,
-        job_id: str,
-        refresh_token: str,
-        *,
-        force: Optional[bool] = None,
-        propagate: Optional[bool] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Stop the running Job, and delete the Job.
-
-        Stop the running Job, and delete the Job.  **Note** You cannot delete or stop the
-        job activity from an ongoing  execution of an action defined in the playbook.  You
-        can repeat the execution of same job, whenever you patch or update the action or
-        workspace.
-         <h3>Authorization</h3>
-         Schematics support generic authorization for its resources.
-         For more information, about Schematics access and permissions, see
-         [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str job_id: Job Id. Use `GET /v2/jobs` API to look up the Job Ids in
-               your IBM Cloud account.
-        :param str refresh_token: The IAM refresh token for the user or service
-               identity.
-                 **Retrieving refresh token**:
-                 * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
-               application/x-www-form-urlencoded" -d
-               "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
-               -u bx:bx`.
-                 * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
-                 **Limitation**:
-                 * If the token is expired, you can use `refresh token` to get a new IAM
-               access token.
-                 * The `refresh_token` parameter cannot be used to retrieve a new IAM
-               access token.
-                 * When the IAM access token is about to expire, use the API key to create
-               a new access token.
-        :param bool force: (optional) Equivalent to -force options in the command
-               line.
-        :param bool propagate: (optional) Auto propagate the chaange or deletion to
-               the dependent resources.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse
-        """
-
-        if not job_id:
-            raise ValueError('job_id must be provided')
-        if not refresh_token:
-            raise ValueError('refresh_token must be provided')
-        headers = {
-            'refresh_token': refresh_token,
-            'force': force,
-            'propagate': propagate,
-        }
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='delete_job',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-
-        path_param_keys = ['job_id']
-        path_param_values = self.encode_path_vars(job_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/jobs/{job_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='DELETE',
-            url=url,
-            headers=headers,
         )
 
         response = self.send(request, **kwargs)
@@ -3853,14 +3989,15 @@ class SchematicsV1(BaseService):
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -4048,8 +4185,14 @@ class SchematicsV1(BaseService):
         description: Optional[str] = None,
         location: Optional[str] = None,
         resource_group: Optional[str] = None,
+        connection_type: Optional[str] = None,
+        credentials: Optional[List['CredentialVariableData']] = None,
+        common_credentials: Optional['CredentialVariableData'] = None,
         inventories_ini: Optional[str] = None,
         resource_queries: Optional[List[str]] = None,
+        bastion: Optional['BastionResourceDefinition'] = None,
+        bastion_credential: Optional['CredentialVariableData'] = None,
+        inventory_view: Optional['InventoryView'] = None,
         **kwargs,
     ) -> DetailedResponse:
         """
@@ -4080,19 +4223,39 @@ class SchematicsV1(BaseService):
                Schematics service.  While creating your workspace or action, choose the
                right region, since it cannot be changed.  Note, this does not limit the
                location of the IBM Cloud resources, provisioned using Schematics.
-        :param str resource_group: (optional) Resource-group name for the Inventory
-               definition.   By default, Inventory definition will be created in Default
-               Resource Group.
+        :param str resource_group: (optional) Resource-group id for the shared
+               dataset.
+        :param str connection_type: (optional) connection type to be ssh or wirm.
+        :param List[CredentialVariableData] credentials: (optional) common
+               credentials for the inventory.
+        :param CredentialVariableData common_credentials: (optional) User editable
+               credential variable data and system generated reference to the value.
         :param str inventories_ini: (optional) Input inventory of host and host
                group for the playbook, in the `.ini` file format.
         :param List[str] resource_queries: (optional) Input resource query
                definitions that is used to dynamically generate the inventory of host and
                host group for the playbook.
+        :param BastionResourceDefinition bastion: (optional) Describes a bastion
+               resource.
+        :param CredentialVariableData bastion_credential: (optional) User editable
+               credential variable data and system generated reference to the value.
+        :param InventoryView inventory_view: (optional) Inventories' structured
+               view for the provided inventory.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `dict` result representing a `InventoryResourceRecord` object
         """
 
+        if credentials is not None:
+            credentials = [convert_model(x) for x in credentials]
+        if common_credentials is not None:
+            common_credentials = convert_model(common_credentials)
+        if bastion is not None:
+            bastion = convert_model(bastion)
+        if bastion_credential is not None:
+            bastion_credential = convert_model(bastion_credential)
+        if inventory_view is not None:
+            inventory_view = convert_model(inventory_view)
         headers = {}
         sdk_headers = get_sdk_headers(
             service_name=self.DEFAULT_SERVICE_NAME,
@@ -4106,8 +4269,14 @@ class SchematicsV1(BaseService):
             'description': description,
             'location': location,
             'resource_group': resource_group,
+            'connection_type': connection_type,
+            'credentials': credentials,
+            'common_credentials': common_credentials,
             'inventories_ini': inventories_ini,
             'resource_queries': resource_queries,
+            'bastion': bastion,
+            'bastion_credential': bastion_credential,
+            'inventory_view': inventory_view,
         }
         data = {k: v for (k, v) in data.items() if v is not None}
         data = json.dumps(data)
@@ -4124,6 +4293,73 @@ class SchematicsV1(BaseService):
             url=url,
             headers=headers,
             data=data,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
+    def delete_inventory(
+        self,
+        inventory_id: str,
+        *,
+        force: Optional[bool] = None,
+        propagate: Optional[bool] = None,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Delete an inventory definition.
+
+        Use this API to delete the resource inventory definition by using the inventory ID
+        that you want to run against. For more information, about inventory delete, refer
+        to [ibmcloud schematics inventory
+        delete](https://cloud.ibm.com/docs/schematics?topic=schematics-schematics-cli-reference#schematics-delete-inventory).
+         **Note** you cannot delete the location and region, resource group from where
+        your inventory is created. Also, make sure your IP addresses are in the
+        [allowlist](https://cloud.ibm.com/docs/schematics?topic=schematics-allowed-ipaddresses).
+         <h3>Authorization</h3>
+         Schematics support generic authorization for its resources.
+         For more information, about Schematics access and permissions, see
+         [Schematics service access roles and required
+        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
+
+        :param str inventory_id: Resource Inventory Id.  Use `GET /v2/inventories`
+               API to look up the Resource Inventory definition Ids  in your IBM Cloud
+               account.
+        :param bool force: (optional) Equivalent to -force options in the command
+               line.
+        :param bool propagate: (optional) Auto propagate the chaange or deletion to
+               the dependent resources.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse
+        """
+
+        if not inventory_id:
+            raise ValueError('inventory_id must be provided')
+        headers = {
+            'force': force,
+            'propagate': propagate,
+        }
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='delete_inventory',
+        )
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['inventory_id']
+        path_param_values = self.encode_path_vars(inventory_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/inventories/{inventory_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='DELETE',
+            url=url,
+            headers=headers,
         )
 
         response = self.send(request, **kwargs)
@@ -4203,8 +4439,14 @@ class SchematicsV1(BaseService):
         description: Optional[str] = None,
         location: Optional[str] = None,
         resource_group: Optional[str] = None,
+        connection_type: Optional[str] = None,
+        credentials: Optional[List['CredentialVariableData']] = None,
+        common_credentials: Optional['CredentialVariableData'] = None,
         inventories_ini: Optional[str] = None,
         resource_queries: Optional[List[str]] = None,
+        bastion: Optional['BastionResourceDefinition'] = None,
+        bastion_credential: Optional['CredentialVariableData'] = None,
+        inventory_view: Optional['InventoryView'] = None,
         **kwargs,
     ) -> DetailedResponse:
         """
@@ -4236,14 +4478,24 @@ class SchematicsV1(BaseService):
                Schematics service.  While creating your workspace or action, choose the
                right region, since it cannot be changed.  Note, this does not limit the
                location of the IBM Cloud resources, provisioned using Schematics.
-        :param str resource_group: (optional) Resource-group name for the Inventory
-               definition.   By default, Inventory definition will be created in Default
-               Resource Group.
+        :param str resource_group: (optional) Resource-group id for the shared
+               dataset.
+        :param str connection_type: (optional) connection type to be ssh or wirm.
+        :param List[CredentialVariableData] credentials: (optional) common
+               credentials for the inventory.
+        :param CredentialVariableData common_credentials: (optional) User editable
+               credential variable data and system generated reference to the value.
         :param str inventories_ini: (optional) Input inventory of host and host
                group for the playbook, in the `.ini` file format.
         :param List[str] resource_queries: (optional) Input resource query
                definitions that is used to dynamically generate the inventory of host and
                host group for the playbook.
+        :param BastionResourceDefinition bastion: (optional) Describes a bastion
+               resource.
+        :param CredentialVariableData bastion_credential: (optional) User editable
+               credential variable data and system generated reference to the value.
+        :param InventoryView inventory_view: (optional) Inventories' structured
+               view for the provided inventory.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `dict` result representing a `InventoryResourceRecord` object
@@ -4251,6 +4503,16 @@ class SchematicsV1(BaseService):
 
         if not inventory_id:
             raise ValueError('inventory_id must be provided')
+        if credentials is not None:
+            credentials = [convert_model(x) for x in credentials]
+        if common_credentials is not None:
+            common_credentials = convert_model(common_credentials)
+        if bastion is not None:
+            bastion = convert_model(bastion)
+        if bastion_credential is not None:
+            bastion_credential = convert_model(bastion_credential)
+        if inventory_view is not None:
+            inventory_view = convert_model(inventory_view)
         headers = {}
         sdk_headers = get_sdk_headers(
             service_name=self.DEFAULT_SERVICE_NAME,
@@ -4264,8 +4526,14 @@ class SchematicsV1(BaseService):
             'description': description,
             'location': location,
             'resource_group': resource_group,
+            'connection_type': connection_type,
+            'credentials': credentials,
+            'common_credentials': common_credentials,
             'inventories_ini': inventories_ini,
             'resource_queries': resource_queries,
+            'bastion': bastion,
+            'bastion_credential': bastion_credential,
+            'inventory_view': inventory_view,
         }
         data = {k: v for (k, v) in data.items() if v is not None}
         data = json.dumps(data)
@@ -4285,72 +4553,6 @@ class SchematicsV1(BaseService):
             url=url,
             headers=headers,
             data=data,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def delete_inventory(
-        self,
-        inventory_id: str,
-        *,
-        force: Optional[bool] = None,
-        propagate: Optional[bool] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Delete an inventory definition.
-
-        Use this API to delete the resource inventory definition by using the inventory ID
-        that you want to run against. For more information, about inventory delete, refer
-        to [ibmcloud schematics inventory
-        delete](https://cloud.ibm.com/docs/schematics?topic=schematics-schematics-cli-reference#schematics-delete-inventory).
-         **Note** you cannot delete the location and region, resource group from where
-        your inventory is created. Also, make sure your IP addresses are in the
-        [allowlist](https://cloud.ibm.com/docs/schematics?topic=schematics-allowed-ipaddresses).
-         <h3>Authorization</h3>
-         Schematics support generic authorization for its resources.
-         For more information, about Schematics access and permissions, see
-         [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str inventory_id: Resource Inventory Id.  Use `GET /v2/inventories`
-               API to look up the Resource Inventory definition Ids  in your IBM Cloud
-               account.
-        :param bool force: (optional) Equivalent to -force options in the command
-               line.
-        :param bool propagate: (optional) Auto propagate the chaange or deletion to
-               the dependent resources.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse
-        """
-
-        if not inventory_id:
-            raise ValueError('inventory_id must be provided')
-        headers = {
-            'force': force,
-            'propagate': propagate,
-        }
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='delete_inventory',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-
-        path_param_keys = ['inventory_id']
-        path_param_values = self.encode_path_vars(inventory_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/inventories/{inventory_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='DELETE',
-            url=url,
-            headers=headers,
         )
 
         response = self.send(request, **kwargs)
@@ -4450,7 +4652,7 @@ class SchematicsV1(BaseService):
         **Note** you cannot update the location and region, resource group  once an action
         is created. Also, make sure your IP addresses are  in the
         [allowlist](https://cloud.ibm.com/docs/schematics?topic=schematics-allowed-ipaddresses).
-         If your Git repository already contains a host file.  Schematics does not
+        If your Git repository already contains a host file.  Schematics does not
         overwrite the host file already present in your Git repository.
         <h3>Authorization</h3>
          Schematics support generic authorization for its resources.
@@ -4460,7 +4662,7 @@ class SchematicsV1(BaseService):
 
         :param str type: (optional) Resource type (cluster, vsi, icd, vpc).
         :param str name: (optional) Resource query name.
-        :param List[ResourceQuery] queries: (optional)
+        :param List[ResourceQuery] queries: (optional) List of resource queries.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
         :rtype: DetailedResponse with `dict` result representing a `ResourceQueryRecord` object
@@ -4496,179 +4698,6 @@ class SchematicsV1(BaseService):
             url=url,
             headers=headers,
             data=data,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def get_resources_query(
-        self,
-        query_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Get resources query.
-
-        Use this API to retrieve the information resource query by Id.  For more
-        information, about resource query commands, refer to  [ibmcloud schematics
-        resource query
-        get](https://cloud.ibm.com/docs/schematics?topic=schematics-schematics-cli-reference#schematics-get-rq).
-        <h3>Authorization</h3>
-         Schematics support generic authorization for its resources.
-         For more information, about Schematics access and permissions, see
-         [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str query_id: Resource query Id.  Use `GET /v2/resource_query` API
-               to look up the Resource query definition Ids  in your IBM Cloud account.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `ResourceQueryRecord` object
-        """
-
-        if not query_id:
-            raise ValueError('query_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='get_resources_query',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['query_id']
-        path_param_values = self.encode_path_vars(query_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/resources_query/{query_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def replace_resources_query(
-        self,
-        query_id: str,
-        *,
-        type: Optional[str] = None,
-        name: Optional[str] = None,
-        queries: Optional[List['ResourceQuery']] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Update resources query definition.
-
-        Use this API to update the resource query definition used to build  the dynamic
-        inventory for the Schematics Action.  For more information, about resource query
-        commands, refer to [ibmcloud schematics resource query
-        update](https://cloud.ibm.com/docs/schematics?topic=schematics-schematics-cli-reference#schematics-update-rq).
-        **Note** you cannot update the location and region, resource group  once a
-        resource query is created. Also, make sure your IP addresses  are in the
-        [allowlist](https://cloud.ibm.com/docs/schematics?topic=schematics-allowed-ipaddresses).
-        <h3>Authorization</h3>
-         Schematics support generic authorization for its resources.
-         For more information, about Schematics access and permissions, see
-         [Schematics service access roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str query_id: Resource query Id.  Use `GET /v2/resource_query` API
-               to look up the Resource query definition Ids  in your IBM Cloud account.
-        :param str type: (optional) Resource type (cluster, vsi, icd, vpc).
-        :param str name: (optional) Resource query name.
-        :param List[ResourceQuery] queries: (optional)
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `ResourceQueryRecord` object
-        """
-
-        if not query_id:
-            raise ValueError('query_id must be provided')
-        if queries is not None:
-            queries = [convert_model(x) for x in queries]
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='replace_resources_query',
-        )
-        headers.update(sdk_headers)
-
-        data = {
-            'type': type,
-            'name': name,
-            'queries': queries,
-        }
-        data = {k: v for (k, v) in data.items() if v is not None}
-        data = json.dumps(data)
-        headers['content-type'] = 'application/json'
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['query_id']
-        path_param_values = self.encode_path_vars(query_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/resources_query/{query_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='PUT',
-            url=url,
-            headers=headers,
-            data=data,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def execute_resource_query(
-        self,
-        query_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Run the resource query.
-
-        Run the resource query.
-
-        :param str query_id: Resource query Id.  Use `GET /v2/resource_query` API
-               to look up the Resource query definition Ids  in your IBM Cloud account.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `ResourceQueryResponseRecord` object
-        """
-
-        if not query_id:
-            raise ValueError('query_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='execute_resource_query',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['query_id']
-        path_param_values = self.encode_path_vars(query_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/resources_query/{query_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='POST',
-            url=url,
-            headers=headers,
         )
 
         response = self.send(request, **kwargs)
@@ -4735,373 +4764,155 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
-    #########################
-    # agent
-    #########################
-
-    def list_agent(
+    def get_resources_query(
         self,
-        *,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
-        profile: Optional[str] = None,
-        filter: Optional[str] = None,
+        query_id: str,
         **kwargs,
     ) -> DetailedResponse:
         """
-        Get all registered/unregistered agents in the Account.
+        Get resources query.
 
-        Get all registered or unregistered agents, in the Account.
-           <h3>Authorization</h3>
-           Schematics support generic authorization for its resources.
-           For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
+        Use this API to retrieve the information resource query by Id.  For more
+        information, about resource query commands, refer to  [ibmcloud schematics
+        resource query
+        get](https://cloud.ibm.com/docs/schematics?topic=schematics-schematics-cli-reference#schematics-get-rq).
+        <h3>Authorization</h3>
+         Schematics support generic authorization for its resources.
+         For more information, about Schematics access and permissions, see
+         [Schematics service access roles and required
         permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
 
-        :param int offset: (optional) The starting position of the item in the list
-               of items. For example, if you have three workspaces in your account, the
-               first workspace is assigned position number 0, the second workspace is
-               assigned position number 1, and so forth. If you have 6 workspaces and you
-               want to list the details for workspaces `2-6`, enter 1. To limit the number
-               of workspaces that is returned, use the `limit` option in addition to the
-               `offset` option. Negative numbers are not supported and are ignored.
-        :param int limit: (optional) The maximum number of items that you want to
-               list. The number must be a positive integer between 1 and 2000. If no value
-               is provided, 100 is used by default.
-        :param str profile: (optional) Level of details returned by the get method.
-        :param str filter: (optional) Use `new` to get all unregistered agents; use
-               `saved` to get all registered agents.
+        :param str query_id: Resource query Id.  Use `GET /v2/resource_query` API
+               to look up the Resource query definition Ids  in your IBM Cloud account.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `AgentList` object
-
-        Deprecated: this method is deprecated and may be removed in a future release.
+        :rtype: DetailedResponse with `dict` result representing a `ResourceQueryRecord` object
         """
 
-        logging.warning('A deprecated operation has been invoked: list_agent')
-
+        if not query_id:
+            raise ValueError('query_id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(
             service_name=self.DEFAULT_SERVICE_NAME,
             service_version='V1',
-            operation_id='list_agent',
+            operation_id='get_resources_query',
         )
         headers.update(sdk_headers)
-
-        params = {
-            'offset': offset,
-            'limit': limit,
-            'profile': profile,
-            'filter': filter,
-        }
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
             del kwargs['headers']
         headers['Accept'] = 'application/json'
 
-        url = '/v2/settings/agents'
+        path_param_keys = ['query_id']
+        path_param_values = self.encode_path_vars(query_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/resources_query/{query_id}'.format(**path_param_dict)
         request = self.prepare_request(
             method='GET',
             url=url,
             headers=headers,
-            params=params,
         )
 
         response = self.send(request, **kwargs)
         return response
 
-    def register_agent(
+    def execute_resource_query(
         self,
-        name: str,
-        agent_location: str,
-        location: str,
-        profile_id: str,
-        *,
-        description: Optional[str] = None,
-        resource_group: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        user_state: Optional['AgentUserState'] = None,
+        query_id: str,
         **kwargs,
     ) -> DetailedResponse:
         """
-        Register the agent with schematics.
+        Run the resource query.
 
-        Register the agent with schematics
-           <h3>Authorization</h3>
-           Schematics support generic authorization for its resources.
-           For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
+        Run the resource query.
 
-        :param str name: The name of the agent (must be unique, for an account).
-        :param str agent_location: The location where agent is deployed in the user
-               environment.
-        :param str location: List of locations supported by IBM Cloud Schematics
-               service.  While creating your workspace or action, choose the right region,
-               since it cannot be changed.  Note, this does not limit the location of the
-               IBM Cloud resources, provisioned using Schematics.
-        :param str profile_id: The IAM trusted profile id, used by the Agent
-               instance.
-        :param str description: (optional) Agent description.
-        :param str resource_group: (optional) The resource-group name for the
-               agent.  By default, Agent will be registered in Default Resource Group.
-        :param List[str] tags: (optional) Tags for the agent.
-        :param AgentUserState user_state: (optional) User defined status of the
-               agent.
+        :param str query_id: Resource query Id.  Use `GET /v2/resource_query` API
+               to look up the Resource query definition Ids  in your IBM Cloud account.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Agent` object
-
-        Deprecated: this method is deprecated and may be removed in a future release.
+        :rtype: DetailedResponse with `dict` result representing a `ResourceQueryResponseRecord` object
         """
 
-        logging.warning('A deprecated operation has been invoked: register_agent')
-
-        if name is None:
-            raise ValueError('name must be provided')
-        if agent_location is None:
-            raise ValueError('agent_location must be provided')
-        if location is None:
-            raise ValueError('location must be provided')
-        if profile_id is None:
-            raise ValueError('profile_id must be provided')
-        if user_state is not None:
-            user_state = convert_model(user_state)
+        if not query_id:
+            raise ValueError('query_id must be provided')
         headers = {}
         sdk_headers = get_sdk_headers(
             service_name=self.DEFAULT_SERVICE_NAME,
             service_version='V1',
-            operation_id='register_agent',
+            operation_id='execute_resource_query',
         )
         headers.update(sdk_headers)
-
-        data = {
-            'name': name,
-            'agent_location': agent_location,
-            'location': location,
-            'profile_id': profile_id,
-            'description': description,
-            'resource_group': resource_group,
-            'tags': tags,
-            'user_state': user_state,
-        }
-        data = {k: v for (k, v) in data.items() if v is not None}
-        data = json.dumps(data)
-        headers['content-type'] = 'application/json'
 
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
             del kwargs['headers']
         headers['Accept'] = 'application/json'
 
-        url = '/v2/settings/agents'
+        path_param_keys = ['query_id']
+        path_param_values = self.encode_path_vars(query_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/resources_query/{query_id}'.format(**path_param_dict)
         request = self.prepare_request(
             method='POST',
             url=url,
             headers=headers,
-            data=data,
         )
 
         response = self.send(request, **kwargs)
         return response
 
-    def get_agent(
+    def replace_resources_query(
         self,
-        agent_id: str,
+        query_id: str,
         *,
-        profile: Optional[str] = None,
+        type: Optional[str] = None,
+        name: Optional[str] = None,
+        queries: Optional[List['ResourceQuery']] = None,
         **kwargs,
     ) -> DetailedResponse:
         """
-        Get the registered agent details.
+        Update resources query definition.
 
-        Reterive list the registered agent details
-           <h3>Authorization</h3>
-           Schematics support generic authorization for its resources.
-           For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
+        Use this API to update the resource query definition used to build  the dynamic
+        inventory for the Schematics Action.  For more information, about resource query
+        commands, refer to [ibmcloud schematics resource query
+        update](https://cloud.ibm.com/docs/schematics?topic=schematics-schematics-cli-reference#schematics-update-rq).
+        **Note** you cannot update the location and region, resource group  once a
+        resource query is created. Also, make sure your IP addresses  are in the
+        [allowlist](https://cloud.ibm.com/docs/schematics?topic=schematics-allowed-ipaddresses).
+        <h3>Authorization</h3>
+         Schematics support generic authorization for its resources.
+         For more information, about Schematics access and permissions, see
+         [Schematics service access roles and required
         permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
 
-        :param str agent_id: Agent ID to get the details of agent.
-        :param str profile: (optional) Level of details returned by the get method.
+        :param str query_id: Resource query Id.  Use `GET /v2/resource_query` API
+               to look up the Resource query definition Ids  in your IBM Cloud account.
+        :param str type: (optional) Resource type (cluster, vsi, icd, vpc).
+        :param str name: (optional) Resource query name.
+        :param List[ResourceQuery] queries: (optional) List of resource queries.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Agent` object
-
-        Deprecated: this method is deprecated and may be removed in a future release.
+        :rtype: DetailedResponse with `dict` result representing a `ResourceQueryRecord` object
         """
 
-        logging.warning('A deprecated operation has been invoked: get_agent')
-
-        if not agent_id:
-            raise ValueError('agent_id must be provided')
+        if not query_id:
+            raise ValueError('query_id must be provided')
+        if queries is not None:
+            queries = [convert_model(x) for x in queries]
         headers = {}
         sdk_headers = get_sdk_headers(
             service_name=self.DEFAULT_SERVICE_NAME,
             service_version='V1',
-            operation_id='get_agent',
-        )
-        headers.update(sdk_headers)
-
-        params = {
-            'profile': profile,
-        }
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['agent_id']
-        path_param_values = self.encode_path_vars(agent_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/settings/agents/{agent_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
-            params=params,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def delete_agent(
-        self,
-        agent_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Deregister the agent.
-
-        Deregistering an agent.
-           <h3>Authorization</h3>
-           Schematics support generic authorization for its resources.
-           For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str agent_id: Agent ID to get the details of agent.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse
-
-        Deprecated: this method is deprecated and may be removed in a future release.
-        """
-
-        logging.warning('A deprecated operation has been invoked: delete_agent')
-
-        if not agent_id:
-            raise ValueError('agent_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='delete_agent',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-
-        path_param_keys = ['agent_id']
-        path_param_values = self.encode_path_vars(agent_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/settings/agents/{agent_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='DELETE',
-            url=url,
-            headers=headers,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def update_agent_registration(
-        self,
-        agent_id: str,
-        name: str,
-        agent_location: str,
-        location: str,
-        profile_id: str,
-        *,
-        description: Optional[str] = None,
-        resource_group: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        user_state: Optional['AgentUserState'] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Update the agent registration.
-
-        Update the agent registeration.
-           <h3>Authorization</h3>
-           Schematics support generic authorization for its resources.
-           For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str agent_id: Agent ID to get the details of agent.
-        :param str name: The name of the agent (must be unique, for an account).
-        :param str agent_location: The location where agent is deployed in the user
-               environment.
-        :param str location: List of locations supported by IBM Cloud Schematics
-               service.  While creating your workspace or action, choose the right region,
-               since it cannot be changed.  Note, this does not limit the location of the
-               IBM Cloud resources, provisioned using Schematics.
-        :param str profile_id: The IAM trusted profile id, used by the Agent
-               instance.
-        :param str description: (optional) Agent description.
-        :param str resource_group: (optional) The resource-group name for the
-               agent.  By default, Agent will be registered in Default Resource Group.
-        :param List[str] tags: (optional) Tags for the agent.
-        :param AgentUserState user_state: (optional) User defined status of the
-               agent.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `Agent` object
-
-        Deprecated: this method is deprecated and may be removed in a future release.
-        """
-
-        logging.warning('A deprecated operation has been invoked: update_agent_registration')
-
-        if not agent_id:
-            raise ValueError('agent_id must be provided')
-        if name is None:
-            raise ValueError('name must be provided')
-        if agent_location is None:
-            raise ValueError('agent_location must be provided')
-        if location is None:
-            raise ValueError('location must be provided')
-        if profile_id is None:
-            raise ValueError('profile_id must be provided')
-        if user_state is not None:
-            user_state = convert_model(user_state)
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='update_agent_registration',
+            operation_id='replace_resources_query',
         )
         headers.update(sdk_headers)
 
         data = {
+            'type': type,
             'name': name,
-            'agent_location': agent_location,
-            'location': location,
-            'profile_id': profile_id,
-            'description': description,
-            'resource_group': resource_group,
-            'tags': tags,
-            'user_state': user_state,
+            'queries': queries,
         }
         data = {k: v for (k, v) in data.items() if v is not None}
         data = json.dumps(data)
@@ -5112,12 +4923,12 @@ class SchematicsV1(BaseService):
             del kwargs['headers']
         headers['Accept'] = 'application/json'
 
-        path_param_keys = ['agent_id']
-        path_param_values = self.encode_path_vars(agent_id)
+        path_param_keys = ['query_id']
+        path_param_values = self.encode_path_vars(query_id)
         path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/settings/agents/{agent_id}'.format(**path_param_dict)
+        url = '/v2/resources_query/{query_id}'.format(**path_param_dict)
         request = self.prepare_request(
-            method='PATCH',
+            method='PUT',
             url=url,
             headers=headers,
             data=data,
@@ -5125,6 +4936,10 @@ class SchematicsV1(BaseService):
 
         response = self.send(request, **kwargs)
         return response
+
+    #########################
+    # agent
+    #########################
 
     def list_agent_data(
         self,
@@ -5341,6 +5156,70 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
+    def delete_agent_data(
+        self,
+        agent_id: str,
+        *,
+        force: Optional[bool] = None,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Delete agent.
+
+        Use this API to disable and delete the agent. Follow the
+        [steps](https://cloud.ibm.com/docs/schematics?topic=schematics-setup-api#cs_api)
+        to retrieve your IAM access token and authenticate with IBM Cloud Schematics by
+        using the API. For more information about frequently asked questions, see
+        [FAQ](/docs/schematics?topic=schematics-faqs-agent) and [Troubleshooting
+        guide](https://cloud.ibm.com/docs/schematics?topic=schematics-agent-crn-not-found).
+           <h3>Authorization</h3>
+           Schematics support generic authorization for its resources.
+           For more information, about Schematics access and permissions, see [Schematics
+        service access
+           roles and required
+        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
+
+        :param str agent_id: Agent ID to get the details of agent.
+        :param bool force: (optional) Equivalent to -force options in the command
+               line, default is false.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse
+        """
+
+        if not agent_id:
+            raise ValueError('agent_id must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='delete_agent_data',
+        )
+        headers.update(sdk_headers)
+
+        params = {
+            'force': force,
+        }
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+        headers['Accept'] = 'application/json'
+
+        path_param_keys = ['agent_id']
+        path_param_values = self.encode_path_vars(agent_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/agents/{agent_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='DELETE',
+            url=url,
+            headers=headers,
+            params=params,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
     def get_agent_data(
         self,
         agent_id: str,
@@ -5469,14 +5348,15 @@ class SchematicsV1(BaseService):
                trying to update an agent from one version to other.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -5559,69 +5439,6 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
-    def delete_agent_data(
-        self,
-        agent_id: str,
-        *,
-        force: Optional[bool] = None,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Delete agent.
-
-        Use this API to disable and delete the agent. Follow the
-        [steps](https://cloud.ibm.com/docs/schematics?topic=schematics-setup-api#cs_api)
-        to retrieve your IAM access token and authenticate with IBM Cloud Schematics by
-        using the API. For more information about frequently asked questions, see
-        [FAQ](/docs/schematics?topic=schematics-faqs-agent) and [Troubleshooting
-        guide](https://cloud.ibm.com/docs/schematics?topic=schematics-agent-crn-not-found).
-           <h3>Authorization</h3>
-           Schematics support generic authorization for its resources.
-           For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str agent_id: Agent ID to get the details of agent.
-        :param bool force: (optional) Equivalent to -force options in the command
-               line, default is false.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse
-        """
-
-        if not agent_id:
-            raise ValueError('agent_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='delete_agent_data',
-        )
-        headers.update(sdk_headers)
-
-        params = {
-            'force': force,
-        }
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-
-        path_param_keys = ['agent_id']
-        path_param_values = self.encode_path_vars(agent_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/agents/{agent_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='DELETE',
-            url=url,
-            headers=headers,
-            params=params,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
     def get_agent_versions(
         self,
         **kwargs,
@@ -5658,60 +5475,6 @@ class SchematicsV1(BaseService):
         headers['Accept'] = 'application/json'
 
         url = '/v2/agents/versions'
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def get_prs_agent_job(
-        self,
-        agent_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Get pre-requisite scanner job status.
-
-        Use get pre-requisite scanner job status API for deploying an agent by using the
-        `agent_id`, `job_id`. The API results the status as **pending**, **in-progress**,
-        **success**, or **failed** in a string format. For more information about
-        supported API endpoints, see [API
-        endpoint](https://cloud.ibm.com/apidocs/schematics/schematics#api-endpoints).
-        <h3>Authorization</h3>
-          Schematics support generic authorization for its resources. For more
-        information, about Schematics access and permissions, see [Schematics service
-        access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str agent_id: Agent ID to get the details of agent.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `AgentPRSJob` object
-        """
-
-        if not agent_id:
-            raise ValueError('agent_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='get_prs_agent_job',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['agent_id']
-        path_param_values = self.encode_path_vars(agent_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/agents/{agent_id}/prs'.format(**path_param_dict)
         request = self.prepare_request(
             method='GET',
             url=url,
@@ -5782,57 +5545,6 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
-    def get_health_check_agent_job(
-        self,
-        agent_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Get agent health check job.
-
-        Use get agent health check job API to retrieve the agent health check job status
-        based on the agent ID. For more information about supported API endpoints, see
-        [API endpoint](/apidocs/schematics/schematics#api-endpoints).
-        <h3>Authorization</h3>
-         Schematics support generic authorization for its resources. For more information,
-        about Schematics access and permissions, see [Schematics service access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str agent_id: Agent ID to get the details of agent.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `AgentHealthJob` object
-        """
-
-        if not agent_id:
-            raise ValueError('agent_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='get_health_check_agent_job',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['agent_id']
-        path_param_values = self.encode_path_vars(agent_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/agents/{agent_id}/health'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
     def health_check_agent_job(
         self,
         agent_id: str,
@@ -5888,57 +5600,6 @@ class SchematicsV1(BaseService):
             url=url,
             headers=headers,
             params=params,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
-    def get_deploy_agent_job(
-        self,
-        agent_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Get agent deployment job.
-
-        Use get agent deployment job API to retrieve the agent deployment job status based
-        on the agent ID. For more information about supported API endpoints, see [API
-        endpoint](https://cloud.ibm.com/apidocs/schematics/schematics#api-endpoints).
-        <h3>Authorization</h3> Schematics support generic authorization for its resources.
-        For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str agent_id: Agent ID to get the details of agent.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse with `dict` result representing a `AgentDeployJob` object
-        """
-
-        if not agent_id:
-            raise ValueError('agent_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='get_deploy_agent_job',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-        headers['Accept'] = 'application/json'
-
-        path_param_keys = ['agent_id']
-        path_param_values = self.encode_path_vars(agent_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/agents/{agent_id}/deploy'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='GET',
-            url=url,
-            headers=headers,
         )
 
         response = self.send(request, **kwargs)
@@ -6020,14 +5681,15 @@ class SchematicsV1(BaseService):
                identity.
                  **Retrieving refresh token**:
                  * Use `export IBMCLOUD_API_KEY=<ibmcloud_api_key>`, and execute `curl -X
-               POST "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
+               POST
+               "https://iam.cloud.ibm.com/identity/token" -H "Content-Type:
                application/x-www-form-urlencoded" -d
                "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$IBMCLOUD_API_KEY"
                -u bx:bx`.
                  * For more information, about creating IAM access token and API Docs,
-               refer, [IAM access
-               token](/apidocs/iam-identity-token-api#gettoken-password) and [Create API
-               key](/apidocs/iam-identity-token-api#create-api-key).
+               refer,
+               [IAM access token](/apidocs/iam-identity-token-api#gettoken-password) and
+               [Create API key](/apidocs/iam-identity-token-api#create-api-key).
                  **Limitation**:
                  * If the token is expired, you can use `refresh token` to get a new IAM
                access token.
@@ -6037,7 +5699,7 @@ class SchematicsV1(BaseService):
                a new access token.
         :param dict headers: A `dict` containing the request headers
         :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse
+        :rtype: DetailedResponse with `dict` result representing a `DeleteAgentResources202Response` object
         """
 
         if not agent_id:
@@ -6057,6 +5719,7 @@ class SchematicsV1(BaseService):
         if 'headers' in kwargs:
             headers.update(kwargs.get('headers'))
             del kwargs['headers']
+        headers['Accept'] = 'application/json'
 
         path_param_keys = ['agent_id']
         path_param_values = self.encode_path_vars(agent_id)
@@ -6355,6 +6018,7 @@ class SchematicsV1(BaseService):
 
     def create_policy(
         self,
+        kind: str,
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
@@ -6362,7 +6026,6 @@ class SchematicsV1(BaseService):
         tags: Optional[List[str]] = None,
         location: Optional[str] = None,
         state: Optional['UserState'] = None,
-        kind: Optional[str] = None,
         target: Optional['PolicyObjects'] = None,
         parameter: Optional['PolicyParameter'] = None,
         scoped_resources: Optional[List['ScopedResource']] = None,
@@ -6384,6 +6047,9 @@ class SchematicsV1(BaseService):
            roles and required
         permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
 
+        :param str kind: Policy kind or categories for managing and deriving policy
+               decision
+                 * `agent_assignment_policy` Agent assignment policy for job execution.
         :param str name: (optional) Name of Schematics customization policy.
         :param str description: (optional) The description of Schematics
                customization policy.
@@ -6397,9 +6063,6 @@ class SchematicsV1(BaseService):
                location of the IBM Cloud resources, provisioned using Schematics.
         :param UserState state: (optional) User defined status of the Schematics
                object.
-        :param str kind: (optional) Policy kind or categories for managing and
-               deriving policy decision
-                 * `agent_assignment_policy` Agent assignment policy for job execution.
         :param PolicyObjects target: (optional) The objects for the Schematics
                policy.
         :param PolicyParameter parameter: (optional) The parameter to tune the
@@ -6411,6 +6074,8 @@ class SchematicsV1(BaseService):
         :rtype: DetailedResponse with `dict` result representing a `Policy` object
         """
 
+        if kind is None:
+            raise ValueError('kind must be provided')
         if state is not None:
             state = convert_model(state)
         if target is not None:
@@ -6428,13 +6093,13 @@ class SchematicsV1(BaseService):
         headers.update(sdk_headers)
 
         data = {
+            'kind': kind,
             'name': name,
             'description': description,
             'resource_group': resource_group,
             'tags': tags,
             'location': location,
             'state': state,
-            'kind': kind,
             'target': target,
             'parameter': parameter,
             'scoped_resources': scoped_resources,
@@ -6454,6 +6119,61 @@ class SchematicsV1(BaseService):
             url=url,
             headers=headers,
             data=data,
+        )
+
+        response = self.send(request, **kwargs)
+        return response
+
+    def delete_policy(
+        self,
+        policy_id: str,
+        **kwargs,
+    ) -> DetailedResponse:
+        """
+        Delete policy.
+
+        Use this API to delete the policy. Follow the
+        [steps](https://cloud.ibm.com/docs/schematics?topic=schematics-setup-api#cs_api)
+        to retrieve your IAM access token and authenticate with IBM Cloud Schematics by
+        using the API. For more information about frequently asked questions, see
+        [FAQ](https://cloud.ibm.com/docs/schematics?topic=schematics-faqs-agent) and
+        [Troubleshooting
+        guide](https://cloud.ibm.com/docs/schematics?topic=schematics-agent-crn-not-found).
+           <h3>Authorization</h3>
+           Schematics support generic authorization for its resources.
+           For more information, about Schematics access and permissions, see [Schematics
+        service access
+           roles and required
+        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
+
+        :param str policy_id: ID to get the details of policy.
+        :param dict headers: A `dict` containing the request headers
+        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
+        :rtype: DetailedResponse
+        """
+
+        if not policy_id:
+            raise ValueError('policy_id must be provided')
+        headers = {}
+        sdk_headers = get_sdk_headers(
+            service_name=self.DEFAULT_SERVICE_NAME,
+            service_version='V1',
+            operation_id='delete_policy',
+        )
+        headers.update(sdk_headers)
+
+        if 'headers' in kwargs:
+            headers.update(kwargs.get('headers'))
+            del kwargs['headers']
+
+        path_param_keys = ['policy_id']
+        path_param_values = self.encode_path_vars(policy_id)
+        path_param_dict = dict(zip(path_param_keys, path_param_values))
+        url = '/v2/settings/policies/{policy_id}'.format(**path_param_dict)
+        request = self.prepare_request(
+            method='DELETE',
+            url=url,
+            headers=headers,
         )
 
         response = self.send(request, **kwargs)
@@ -6523,64 +6243,10 @@ class SchematicsV1(BaseService):
         response = self.send(request, **kwargs)
         return response
 
-    def delete_policy(
-        self,
-        policy_id: str,
-        **kwargs,
-    ) -> DetailedResponse:
-        """
-        Delete policy.
-
-        Use this API to delete the policy. Follow the
-        [steps](https://cloud.ibm.com/docs/schematics?topic=schematics-setup-api#cs_api)
-        to retrieve your IAM access token and authenticate with IBM Cloud Schematics by
-        using the API. For more information about frequently asked questions, see
-        [FAQ](https://cloud.ibm.com/docs/schematics?topic=schematics-faqs-agent) and
-        [Troubleshooting
-        guide](https://cloud.ibm.com/docs/schematics?topic=schematics-agent-crn-not-found).
-           <h3>Authorization</h3>
-           Schematics support generic authorization for its resources.
-           For more information, about Schematics access and permissions, see [Schematics
-        service access
-           roles and required
-        permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
-
-        :param str policy_id: ID to get the details of policy.
-        :param dict headers: A `dict` containing the request headers
-        :return: A `DetailedResponse` containing the result, headers and HTTP status code.
-        :rtype: DetailedResponse
-        """
-
-        if not policy_id:
-            raise ValueError('policy_id must be provided')
-        headers = {}
-        sdk_headers = get_sdk_headers(
-            service_name=self.DEFAULT_SERVICE_NAME,
-            service_version='V1',
-            operation_id='delete_policy',
-        )
-        headers.update(sdk_headers)
-
-        if 'headers' in kwargs:
-            headers.update(kwargs.get('headers'))
-            del kwargs['headers']
-
-        path_param_keys = ['policy_id']
-        path_param_values = self.encode_path_vars(policy_id)
-        path_param_dict = dict(zip(path_param_keys, path_param_values))
-        url = '/v2/settings/policies/{policy_id}'.format(**path_param_dict)
-        request = self.prepare_request(
-            method='DELETE',
-            url=url,
-            headers=headers,
-        )
-
-        response = self.send(request, **kwargs)
-        return response
-
     def update_policy(
         self,
         policy_id: str,
+        kind: str,
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
@@ -6588,7 +6254,6 @@ class SchematicsV1(BaseService):
         tags: Optional[List[str]] = None,
         location: Optional[str] = None,
         state: Optional['UserState'] = None,
-        kind: Optional[str] = None,
         target: Optional['PolicyObjects'] = None,
         parameter: Optional['PolicyParameter'] = None,
         scoped_resources: Optional[List['ScopedResource']] = None,
@@ -6615,6 +6280,9 @@ class SchematicsV1(BaseService):
         permissions](https://cloud.ibm.com/docs/schematics?topic=schematics-access#access-roles).
 
         :param str policy_id: ID to get the details of policy.
+        :param str kind: Policy kind or categories for managing and deriving policy
+               decision
+                 * `agent_assignment_policy` Agent assignment policy for job execution.
         :param str name: (optional) Name of Schematics customization policy.
         :param str description: (optional) The description of Schematics
                customization policy.
@@ -6628,9 +6296,6 @@ class SchematicsV1(BaseService):
                location of the IBM Cloud resources, provisioned using Schematics.
         :param UserState state: (optional) User defined status of the Schematics
                object.
-        :param str kind: (optional) Policy kind or categories for managing and
-               deriving policy decision
-                 * `agent_assignment_policy` Agent assignment policy for job execution.
         :param PolicyObjects target: (optional) The objects for the Schematics
                policy.
         :param PolicyParameter parameter: (optional) The parameter to tune the
@@ -6644,6 +6309,8 @@ class SchematicsV1(BaseService):
 
         if not policy_id:
             raise ValueError('policy_id must be provided')
+        if kind is None:
+            raise ValueError('kind must be provided')
         if state is not None:
             state = convert_model(state)
         if target is not None:
@@ -6661,13 +6328,13 @@ class SchematicsV1(BaseService):
         headers.update(sdk_headers)
 
         data = {
+            'kind': kind,
             'name': name,
             'description': description,
             'resource_group': resource_group,
             'tags': tags,
             'location': location,
             'state': state,
-            'kind': kind,
             'target': target,
             'parameter': parameter,
             'scoped_resources': scoped_resources,
@@ -6766,7 +6433,6 @@ class ListJobsEnums:
 
         IDS = 'ids'
         SUMMARY = 'summary'
-
     class Resource(str, Enum):
         """
         Name of the resource (workspaces, actions, environment or controls).
@@ -6776,7 +6442,6 @@ class ListJobsEnums:
         ACTION = 'action'
         ACTIONS = 'actions'
         ENVIRONMENT = 'environment'
-
     class List(str, Enum):
         """
         list jobs.
@@ -6860,46 +6525,6 @@ class ListResourceQueryEnums:
         SUMMARY = 'summary'
 
 
-class ListAgentEnums:
-    """
-    Enums for list_agent parameters.
-    """
-
-    class Profile(str, Enum):
-        """
-        Level of details returned by the get method.
-        """
-
-        SUMMARY = 'summary'
-        DETAILED = 'detailed'
-        IDS = 'ids'
-
-    class Filter(str, Enum):
-        """
-        Use `new` to get all unregistered agents; use `saved` to get all registered
-        agents.
-        """
-
-        ALL = 'all'
-        NEW = 'new'
-        SAVED = 'saved'
-
-
-class GetAgentEnums:
-    """
-    Enums for get_agent parameters.
-    """
-
-    class Profile(str, Enum):
-        """
-        Level of details returned by the get method.
-        """
-
-        SUMMARY = 'summary'
-        DETAILED = 'detailed'
-        IDS = 'ids'
-
-
 class ListAgentDataEnums:
     """
     Enums for list_agent_data parameters.
@@ -6913,7 +6538,6 @@ class ListAgentDataEnums:
         SUMMARY = 'summary'
         DETAILED = 'detailed'
         IDS = 'ids'
-
     class Filter(str, Enum):
         """
         Use `new` to get all unregistered agents; use `saved` to get all registered
@@ -7040,7 +6664,7 @@ class Action:
     :param datetime updated_at: (optional) Action updation time.
     :param str updated_by: (optional) E-mail address of the user who updated an
           action.
-    :param ActionState state: (optional) Computed state of the Action.
+    :param ActionLiteState state: (optional) Computed state of the Action.
     :param List[str] playbook_names: (optional) Playbook names retrieved from the
           repository.
     :param SystemLock sys_lock: (optional) System lock status.
@@ -7083,7 +6707,7 @@ class Action:
         created_by: Optional[str] = None,
         updated_at: Optional[datetime] = None,
         updated_by: Optional[str] = None,
-        state: Optional['ActionState'] = None,
+        state: Optional['ActionLiteState'] = None,
         playbook_names: Optional[List[str]] = None,
         sys_lock: Optional['SystemLock'] = None,
         git_token_ref: Optional[str] = None,
@@ -7246,7 +6870,7 @@ class Action:
         if (updated_by := _dict.get('updated_by')) is not None:
             args['updated_by'] = updated_by
         if (state := _dict.get('state')) is not None:
-            args['state'] = ActionState.from_dict(state)
+            args['state'] = ActionLiteState.from_dict(state)
         if (playbook_names := _dict.get('playbook_names')) is not None:
             args['playbook_names'] = playbook_names
         if (sys_lock := _dict.get('sys_lock')) is not None:
@@ -7415,6 +7039,7 @@ class Action:
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
 
+
     class BastionConnectionTypeEnum(str, Enum):
         """
         Type of connection to be used when connecting to bastion host.  If the
@@ -7423,6 +7048,7 @@ class Action:
         """
 
         SSH = 'ssh'
+
 
     class InventoryConnectionTypeEnum(str, Enum):
         """
@@ -7433,6 +7059,7 @@ class Action:
 
         SSH = 'ssh'
         WINRM = 'winrm'
+
 
     class SourceTypeEnum(str, Enum):
         """
@@ -7445,6 +7072,7 @@ class Action:
         GIT_LAB = 'git_lab'
         IBM_GIT_LAB = 'ibm_git_lab'
         IBM_CLOUD_CATALOG = 'ibm_cloud_catalog'
+
 
 
 class ActionList:
@@ -7760,6 +7388,7 @@ class ActionLite:
         EU_DE = 'eu-de'
 
 
+
 class ActionLiteState:
     """
     Computed state of the Action.
@@ -7838,308 +7467,6 @@ class ActionLiteState:
         DISABLED = 'disabled'
         CRITICAL = 'critical'
 
-
-class ActionState:
-    """
-    Computed state of the Action.
-
-    :param str status_code: (optional) Status of automation (workspace or action).
-    :param str status_job_id: (optional) Job id reference for this status.
-    :param str status_message: (optional) Automation status message - to be
-          displayed along with the status_code.
-    """
-
-    def __init__(
-        self,
-        *,
-        status_code: Optional[str] = None,
-        status_job_id: Optional[str] = None,
-        status_message: Optional[str] = None,
-    ) -> None:
-        """
-        Initialize a ActionState object.
-
-        :param str status_code: (optional) Status of automation (workspace or
-               action).
-        :param str status_job_id: (optional) Job id reference for this status.
-        :param str status_message: (optional) Automation status message - to be
-               displayed along with the status_code.
-        """
-        self.status_code = status_code
-        self.status_job_id = status_job_id
-        self.status_message = status_message
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ActionState':
-        """Initialize a ActionState object from a json dictionary."""
-        args = {}
-        if (status_code := _dict.get('status_code')) is not None:
-            args['status_code'] = status_code
-        if (status_job_id := _dict.get('status_job_id')) is not None:
-            args['status_job_id'] = status_job_id
-        if (status_message := _dict.get('status_message')) is not None:
-            args['status_message'] = status_message
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ActionState object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'status_code') and self.status_code is not None:
-            _dict['status_code'] = self.status_code
-        if hasattr(self, 'status_job_id') and self.status_job_id is not None:
-            _dict['status_job_id'] = self.status_job_id
-        if hasattr(self, 'status_message') and self.status_message is not None:
-            _dict['status_message'] = self.status_message
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ActionState object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ActionState') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ActionState') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-    class StatusCodeEnum(str, Enum):
-        """
-        Status of automation (workspace or action).
-        """
-
-        NORMAL = 'normal'
-        PENDING = 'pending'
-        DISABLED = 'disabled'
-        CRITICAL = 'critical'
-
-
-class Agent:
-    """
-    The agent registration details, with user inputs and system generated data.
-
-    :param str name: The name of the agent (must be unique, for an account).
-    :param str description: (optional) Agent description.
-    :param str resource_group: (optional) The resource-group name for the agent.  By
-          default, Agent will be registered in Default Resource Group.
-    :param List[str] tags: (optional) Tags for the agent.
-    :param str agent_location: The location where agent is deployed in the user
-          environment.
-    :param str location: List of locations supported by IBM Cloud Schematics
-          service.  While creating your workspace or action, choose the right region,
-          since it cannot be changed.  Note, this does not limit the location of the IBM
-          Cloud resources, provisioned using Schematics.
-    :param str profile_id: The IAM trusted profile id, used by the Agent instance.
-    :param str agent_crn: (optional) The Agent crn, obtained from the Schematics
-          Agent deployment configuration.
-    :param str id: (optional) The Agent registration id.
-    :param datetime registered_at: (optional) The Agent registration date-time.
-    :param str registered_by: (optional) The email address of an user who registered
-          the Agent.
-    :param datetime updated_at: (optional) The Agent registration updation time.
-    :param str updated_by: (optional) Email address of user who updated the Agent
-          registration.
-    :param AgentUserState user_state: (optional) User defined status of the agent.
-    :param ConnectionState connection_state: (optional) Connection status of the
-          agent.
-    :param AgentSystemState system_state: (optional) Computed state of the agent.
-    """
-
-    def __init__(
-        self,
-        name: str,
-        agent_location: str,
-        location: str,
-        profile_id: str,
-        *,
-        description: Optional[str] = None,
-        resource_group: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        agent_crn: Optional[str] = None,
-        id: Optional[str] = None,
-        registered_at: Optional[datetime] = None,
-        registered_by: Optional[str] = None,
-        updated_at: Optional[datetime] = None,
-        updated_by: Optional[str] = None,
-        user_state: Optional['AgentUserState'] = None,
-        connection_state: Optional['ConnectionState'] = None,
-        system_state: Optional['AgentSystemState'] = None,
-    ) -> None:
-        """
-        Initialize a Agent object.
-
-        :param str name: The name of the agent (must be unique, for an account).
-        :param str agent_location: The location where agent is deployed in the user
-               environment.
-        :param str location: List of locations supported by IBM Cloud Schematics
-               service.  While creating your workspace or action, choose the right region,
-               since it cannot be changed.  Note, this does not limit the location of the
-               IBM Cloud resources, provisioned using Schematics.
-        :param str profile_id: The IAM trusted profile id, used by the Agent
-               instance.
-        :param str description: (optional) Agent description.
-        :param str resource_group: (optional) The resource-group name for the
-               agent.  By default, Agent will be registered in Default Resource Group.
-        :param List[str] tags: (optional) Tags for the agent.
-        :param AgentUserState user_state: (optional) User defined status of the
-               agent.
-        """
-        self.name = name
-        self.description = description
-        self.resource_group = resource_group
-        self.tags = tags
-        self.agent_location = agent_location
-        self.location = location
-        self.profile_id = profile_id
-        self.agent_crn = agent_crn
-        self.id = id
-        self.registered_at = registered_at
-        self.registered_by = registered_by
-        self.updated_at = updated_at
-        self.updated_by = updated_by
-        self.user_state = user_state
-        self.connection_state = connection_state
-        self.system_state = system_state
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'Agent':
-        """Initialize a Agent object from a json dictionary."""
-        args = {}
-        if (name := _dict.get('name')) is not None:
-            args['name'] = name
-        else:
-            raise ValueError('Required property \'name\' not present in Agent JSON')
-        if (description := _dict.get('description')) is not None:
-            args['description'] = description
-        if (resource_group := _dict.get('resource_group')) is not None:
-            args['resource_group'] = resource_group
-        if (tags := _dict.get('tags')) is not None:
-            args['tags'] = tags
-        if (agent_location := _dict.get('agent_location')) is not None:
-            args['agent_location'] = agent_location
-        else:
-            raise ValueError('Required property \'agent_location\' not present in Agent JSON')
-        if (location := _dict.get('location')) is not None:
-            args['location'] = location
-        else:
-            raise ValueError('Required property \'location\' not present in Agent JSON')
-        if (profile_id := _dict.get('profile_id')) is not None:
-            args['profile_id'] = profile_id
-        else:
-            raise ValueError('Required property \'profile_id\' not present in Agent JSON')
-        if (agent_crn := _dict.get('agent_crn')) is not None:
-            args['agent_crn'] = agent_crn
-        if (id := _dict.get('id')) is not None:
-            args['id'] = id
-        if (registered_at := _dict.get('registered_at')) is not None:
-            args['registered_at'] = string_to_datetime(registered_at)
-        if (registered_by := _dict.get('registered_by')) is not None:
-            args['registered_by'] = registered_by
-        if (updated_at := _dict.get('updated_at')) is not None:
-            args['updated_at'] = string_to_datetime(updated_at)
-        if (updated_by := _dict.get('updated_by')) is not None:
-            args['updated_by'] = updated_by
-        if (user_state := _dict.get('user_state')) is not None:
-            args['user_state'] = AgentUserState.from_dict(user_state)
-        if (connection_state := _dict.get('connection_state')) is not None:
-            args['connection_state'] = ConnectionState.from_dict(connection_state)
-        if (system_state := _dict.get('system_state')) is not None:
-            args['system_state'] = AgentSystemState.from_dict(system_state)
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a Agent object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'description') and self.description is not None:
-            _dict['description'] = self.description
-        if hasattr(self, 'resource_group') and self.resource_group is not None:
-            _dict['resource_group'] = self.resource_group
-        if hasattr(self, 'tags') and self.tags is not None:
-            _dict['tags'] = self.tags
-        if hasattr(self, 'agent_location') and self.agent_location is not None:
-            _dict['agent_location'] = self.agent_location
-        if hasattr(self, 'location') and self.location is not None:
-            _dict['location'] = self.location
-        if hasattr(self, 'profile_id') and self.profile_id is not None:
-            _dict['profile_id'] = self.profile_id
-        if hasattr(self, 'agent_crn') and getattr(self, 'agent_crn') is not None:
-            _dict['agent_crn'] = getattr(self, 'agent_crn')
-        if hasattr(self, 'id') and getattr(self, 'id') is not None:
-            _dict['id'] = getattr(self, 'id')
-        if hasattr(self, 'registered_at') and getattr(self, 'registered_at') is not None:
-            _dict['registered_at'] = datetime_to_string(getattr(self, 'registered_at'))
-        if hasattr(self, 'registered_by') and getattr(self, 'registered_by') is not None:
-            _dict['registered_by'] = getattr(self, 'registered_by')
-        if hasattr(self, 'updated_at') and getattr(self, 'updated_at') is not None:
-            _dict['updated_at'] = datetime_to_string(getattr(self, 'updated_at'))
-        if hasattr(self, 'updated_by') and getattr(self, 'updated_by') is not None:
-            _dict['updated_by'] = getattr(self, 'updated_by')
-        if hasattr(self, 'user_state') and self.user_state is not None:
-            if isinstance(self.user_state, dict):
-                _dict['user_state'] = self.user_state
-            else:
-                _dict['user_state'] = self.user_state.to_dict()
-        if hasattr(self, 'connection_state') and getattr(self, 'connection_state') is not None:
-            if isinstance(getattr(self, 'connection_state'), dict):
-                _dict['connection_state'] = getattr(self, 'connection_state')
-            else:
-                _dict['connection_state'] = getattr(self, 'connection_state').to_dict()
-        if hasattr(self, 'system_state') and getattr(self, 'system_state') is not None:
-            if isinstance(getattr(self, 'system_state'), dict):
-                _dict['system_state'] = getattr(self, 'system_state')
-            else:
-                _dict['system_state'] = getattr(self, 'system_state').to_dict()
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this Agent object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'Agent') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'Agent') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-    class LocationEnum(str, Enum):
-        """
-        List of locations supported by IBM Cloud Schematics service.  While creating your
-        workspace or action, choose the right region, since it cannot be changed.  Note,
-        this does not limit the location of the IBM Cloud resources, provisioned using
-        Schematics.
-        """
-
-        US_SOUTH = 'us-south'
-        US_EAST = 'us-east'
-        EU_GB = 'eu-gb'
-        EU_DE = 'eu-de'
 
 
 class AgentAssignmentPolicyParameter:
@@ -8234,6 +7561,7 @@ class AgentAssignmentPolicyParameter:
 
         IDS = 'ids'
         SCOPED = 'scoped'
+
 
 
 class AgentData:
@@ -8557,6 +7885,7 @@ class AgentData:
         EU_DE = 'eu-de'
 
 
+
 class AgentDataList:
     """
     The list of agents.
@@ -8678,6 +8007,8 @@ class AgentDataLite:
     :param AgentSystemStatus system_state: (optional) Computed state of the agent.
     :param AgentKPIDataLite agent_kpi: (optional) Schematics Agent key performance
           indicators' summary.
+    :param EncryptionInfo encryption: (optional) Encryption details about the
+          workspace such as scheme (byok/kyok) and key CRN.
     """
 
     def __init__(
@@ -8700,6 +8031,7 @@ class AgentDataLite:
         updated_by: Optional[str] = None,
         system_state: Optional['AgentSystemStatus'] = None,
         agent_kpi: Optional['AgentKPIDataLite'] = None,
+        encryption: Optional['EncryptionInfo'] = None,
     ) -> None:
         """
         Initialize a AgentDataLite object.
@@ -8742,6 +8074,7 @@ class AgentDataLite:
         self.updated_by = updated_by
         self.system_state = system_state
         self.agent_kpi = agent_kpi
+        self.encryption = encryption
 
     @classmethod
     def from_dict(cls, _dict: Dict) -> 'AgentDataLite':
@@ -8781,6 +8114,8 @@ class AgentDataLite:
             args['system_state'] = AgentSystemStatus.from_dict(system_state)
         if (agent_kpi := _dict.get('agent_kpi')) is not None:
             args['agent_kpi'] = AgentKPIDataLite.from_dict(agent_kpi)
+        if (encryption := _dict.get('encryption')) is not None:
+            args['encryption'] = EncryptionInfo.from_dict(encryption)
         return cls(**args)
 
     @classmethod
@@ -8840,6 +8175,11 @@ class AgentDataLite:
                 _dict['agent_kpi'] = self.agent_kpi
             else:
                 _dict['agent_kpi'] = self.agent_kpi.to_dict()
+        if hasattr(self, 'encryption') and getattr(self, 'encryption') is not None:
+            if isinstance(getattr(self, 'encryption'), dict):
+                _dict['encryption'] = getattr(self, 'encryption')
+            else:
+                _dict['encryption'] = getattr(self, 'encryption').to_dict()
         return _dict
 
     def _to_dict(self):
@@ -8872,6 +8212,7 @@ class AgentDataLite:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
+
 
 
 class AgentDataRecentDeployJob:
@@ -9012,6 +8353,7 @@ class AgentDataRecentDeployJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class AgentDataRecentDestroyJob:
     """
     destroy resource provisoned by agent deploy method.
@@ -9142,6 +8484,7 @@ class AgentDataRecentDestroyJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class AgentDataRecentHealthJob:
     """
     Agent health check.
@@ -9268,6 +8611,7 @@ class AgentDataRecentHealthJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
+
 
 
 class AgentDataRecentPrsJob:
@@ -9397,6 +8741,7 @@ class AgentDataRecentPrsJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
+
 
 
 class AgentDeployJob:
@@ -9537,6 +8882,7 @@ class AgentDeployJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class AgentHealthJob:
     """
     Agent health check.
@@ -9663,6 +9009,7 @@ class AgentHealthJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
+
 
 
 class AgentInfo:
@@ -9859,6 +9206,7 @@ class AgentInfrastructure:
         IBM_SATELLITE = 'ibm_satellite'
 
 
+
 class AgentKPIData:
     """
     Schematics Agent key performance indicators.
@@ -9967,6 +9315,7 @@ class AgentKPIData:
         UNAVAILABLE = 'unavailable'
         ERROR = 'error'
 
+
     class LifecycleIndicatorEnum(str, Enum):
         """
         Overall lifecycle indicator reported by the agents.
@@ -9975,6 +9324,7 @@ class AgentKPIData:
         CONSISTENT = 'consistent'
         INCONSISTENT = 'inconsistent'
         OBSELETE = 'obselete'
+
 
 
 class AgentKPIDataLite:
@@ -10065,6 +9415,7 @@ class AgentKPIDataLite:
         UNAVAILABLE = 'unavailable'
         ERROR = 'error'
 
+
     class LifecycleIndicatorEnum(str, Enum):
         """
         Overall lifecycle indicator reported by the agents.
@@ -10074,93 +9425,6 @@ class AgentKPIDataLite:
         INCONSISTENT = 'inconsistent'
         OBSELETE = 'obselete'
 
-
-class AgentList:
-    """
-    The list of agent details.
-
-    :param int total_count: (optional) The total number of records.
-    :param int limit: (optional) The number of records returned.
-    :param int offset: The skipped number of records.
-    :param List[Agent] agents: (optional) The list of agents in the account.
-    """
-
-    def __init__(
-        self,
-        offset: int,
-        *,
-        total_count: Optional[int] = None,
-        limit: Optional[int] = None,
-        agents: Optional[List['Agent']] = None,
-    ) -> None:
-        """
-        Initialize a AgentList object.
-
-        :param int offset: The skipped number of records.
-        :param List[Agent] agents: (optional) The list of agents in the account.
-        """
-        self.total_count = total_count
-        self.limit = limit
-        self.offset = offset
-        self.agents = agents
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'AgentList':
-        """Initialize a AgentList object from a json dictionary."""
-        args = {}
-        if (total_count := _dict.get('total_count')) is not None:
-            args['total_count'] = total_count
-        if (limit := _dict.get('limit')) is not None:
-            args['limit'] = limit
-        if (offset := _dict.get('offset')) is not None:
-            args['offset'] = offset
-        else:
-            raise ValueError('Required property \'offset\' not present in AgentList JSON')
-        if (agents := _dict.get('agents')) is not None:
-            args['agents'] = [Agent.from_dict(v) for v in agents]
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a AgentList object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'total_count') and getattr(self, 'total_count') is not None:
-            _dict['total_count'] = getattr(self, 'total_count')
-        if hasattr(self, 'limit') and getattr(self, 'limit') is not None:
-            _dict['limit'] = getattr(self, 'limit')
-        if hasattr(self, 'offset') and self.offset is not None:
-            _dict['offset'] = self.offset
-        if hasattr(self, 'agents') and self.agents is not None:
-            agents_list = []
-            for v in self.agents:
-                if isinstance(v, dict):
-                    agents_list.append(v)
-                else:
-                    agents_list.append(v.to_dict())
-            _dict['agents'] = agents_list
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this AgentList object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'AgentList') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'AgentList') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
 
 
 class AgentMetadataInfo:
@@ -10358,6 +9622,7 @@ class AgentPRSJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class AgentSystemStatus:
     """
     Computed state of the agent.
@@ -10433,6 +9698,7 @@ class AgentSystemStatus:
         IN_PROGRESS = 'in_progress'
         PENDING = 'pending'
         DRAFT = 'draft'
+
 
 
 class AgentUserState:
@@ -10520,6 +9786,7 @@ class AgentUserState:
 
         ENABLE = 'enable'
         DISABLE = 'disable'
+
 
 
 class AgentVersionInfo:
@@ -10652,83 +9919,6 @@ class AgentVersions:
     def __ne__(self, other: 'AgentVersions') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
-
-
-class AgentSystemState:
-    """
-    Computed state of the agent.
-
-    :param str state: (optional) Agent Status.
-    :param str message: (optional) The Agent status message.
-    """
-
-    def __init__(
-        self,
-        *,
-        state: Optional[str] = None,
-        message: Optional[str] = None,
-    ) -> None:
-        """
-        Initialize a AgentSystemState object.
-
-        :param str state: (optional) Agent Status.
-        :param str message: (optional) The Agent status message.
-        """
-        self.state = state
-        self.message = message
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'AgentSystemState':
-        """Initialize a AgentSystemState object from a json dictionary."""
-        args = {}
-        if (state := _dict.get('state')) is not None:
-            args['state'] = state
-        if (message := _dict.get('message')) is not None:
-            args['message'] = message
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a AgentSystemState object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'state') and self.state is not None:
-            _dict['state'] = self.state
-        if hasattr(self, 'message') and self.message is not None:
-            _dict['message'] = self.message
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this AgentSystemState object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'AgentSystemState') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'AgentSystemState') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-    class StateEnum(str, Enum):
-        """
-        Agent Status.
-        """
-
-        ERROR = 'error'
-        NORMAL = 'normal'
-        IN_PROGRESS = 'in_progress'
-        PENDING = 'pending'
-        DRAFT = 'draft'
 
 
 class BastionResourceDefinition:
@@ -10888,6 +10078,7 @@ class CartOrderData:
         SERVICETAGS = 'servicetags'
 
 
+
 class CatalogRef:
     """
     Information about the software template that you chose from the IBM Cloud catalog.
@@ -10910,7 +10101,8 @@ class CatalogRef:
           software.
     :param str offering_version: (optional) The version of the software template
           that you chose to install from the IBM Cloud catalog.
-    :param List[ServiceExtensions] service_extensions: (optional)
+    :param List[ServiceExtensions] service_extensions: (optional) Service
+          Extensions.
     """
 
     def __init__(
@@ -10947,7 +10139,8 @@ class CatalogRef:
                software.
         :param str offering_version: (optional) The version of the software
                template that you chose to install from the IBM Cloud catalog.
-        :param List[ServiceExtensions] service_extensions: (optional)
+        :param List[ServiceExtensions] service_extensions: (optional) Service
+               Extensions.
         """
         self.dry_run = dry_run
         self.owning_account = owning_account
@@ -11234,10 +10427,7 @@ class CatalogSource:
             _dict['offering_version_flavour_name'] = self.offering_version_flavour_name
         if hasattr(self, 'offering_repo_url') and self.offering_repo_url is not None:
             _dict['offering_repo_url'] = self.offering_repo_url
-        if (
-            hasattr(self, 'offering_provisioner_working_directory')
-            and self.offering_provisioner_working_directory is not None
-        ):
+        if hasattr(self, 'offering_provisioner_working_directory') and self.offering_provisioner_working_directory is not None:
             _dict['offering_provisioner_working_directory'] = self.offering_provisioner_working_directory
         if hasattr(self, 'dry_run') and self.dry_run is not None:
             _dict['dry_run'] = self.dry_run
@@ -11342,87 +10532,6 @@ class CommandsInfo:
         return not self == other
 
 
-class ConnectionState:
-    """
-    Connection status of the agent.
-
-    :param str state: (optional) Agent Connection Status
-            * `Connected` When Schematics is able to connect to the agent.
-            * `Disconnected` When Schematics is able not connect to the agent.
-    :param datetime checked_at: (optional) When the connection state is modified.
-    """
-
-    def __init__(
-        self,
-        *,
-        state: Optional[str] = None,
-        checked_at: Optional[datetime] = None,
-    ) -> None:
-        """
-        Initialize a ConnectionState object.
-
-        :param str state: (optional) Agent Connection Status
-                 * `Connected` When Schematics is able to connect to the agent.
-                 * `Disconnected` When Schematics is able not connect to the agent.
-        :param datetime checked_at: (optional) When the connection state is
-               modified.
-        """
-        self.state = state
-        self.checked_at = checked_at
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'ConnectionState':
-        """Initialize a ConnectionState object from a json dictionary."""
-        args = {}
-        if (state := _dict.get('state')) is not None:
-            args['state'] = state
-        if (checked_at := _dict.get('checked_at')) is not None:
-            args['checked_at'] = string_to_datetime(checked_at)
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a ConnectionState object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'state') and self.state is not None:
-            _dict['state'] = self.state
-        if hasattr(self, 'checked_at') and self.checked_at is not None:
-            _dict['checked_at'] = datetime_to_string(self.checked_at)
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this ConnectionState object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'ConnectionState') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'ConnectionState') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
-
-    class StateEnum(str, Enum):
-        """
-        Agent Connection Status
-          * `Connected` When Schematics is able to connect to the agent.
-          * `Disconnected` When Schematics is able not connect to the agent.
-        """
-
-        CONNECTED = 'Connected'
-        DISCONNECTED = 'Disconnected'
-
-
 class CredentialVariableData:
     """
     User editable credential variable data and system generated reference to the value.
@@ -11432,6 +10541,8 @@ class CredentialVariableData:
           to the value. **Note** The SSH key should contain three `\n` in the SSH key
           value as shown in the example for CLI or API calls. When using Bastion from API
           you need to add SSH key in both `credentials` and `bastion_credentials`.
+    :param str redacted: (optional) This is used to check if the credentials are
+          masked or not.
     :param bool use_default: (optional) True, will ignore the data in the value
           attribute, instead the data in metadata.default_value will be used.
     :param CredentialVariableMetadata metadata: (optional) An user editable metadata
@@ -11445,6 +10556,7 @@ class CredentialVariableData:
         *,
         name: Optional[str] = None,
         value: Optional[str] = None,
+        redacted: Optional[str] = None,
         use_default: Optional[bool] = None,
         metadata: Optional['CredentialVariableMetadata'] = None,
         link: Optional[str] = None,
@@ -11458,6 +10570,8 @@ class CredentialVariableData:
                the SSH key value as shown in the example for CLI or API calls. When using
                Bastion from API you need to add SSH key in both `credentials` and
                `bastion_credentials`.
+        :param str redacted: (optional) This is used to check if the credentials
+               are masked or not.
         :param bool use_default: (optional) True, will ignore the data in the value
                attribute, instead the data in metadata.default_value will be used.
         :param CredentialVariableMetadata metadata: (optional) An user editable
@@ -11465,6 +10579,7 @@ class CredentialVariableData:
         """
         self.name = name
         self.value = value
+        self.redacted = redacted
         self.use_default = use_default
         self.metadata = metadata
         self.link = link
@@ -11477,6 +10592,8 @@ class CredentialVariableData:
             args['name'] = name
         if (value := _dict.get('value')) is not None:
             args['value'] = value
+        if (redacted := _dict.get('redacted')) is not None:
+            args['redacted'] = redacted
         if (use_default := _dict.get('use_default')) is not None:
             args['use_default'] = use_default
         if (metadata := _dict.get('metadata')) is not None:
@@ -11497,6 +10614,8 @@ class CredentialVariableData:
             _dict['name'] = self.name
         if hasattr(self, 'value') and self.value is not None:
             _dict['value'] = self.value
+        if hasattr(self, 'redacted') and self.redacted is not None:
+            _dict['redacted'] = self.redacted
         if hasattr(self, 'use_default') and self.use_default is not None:
             _dict['use_default'] = self.use_default
         if hasattr(self, 'metadata') and self.metadata is not None:
@@ -11691,6 +10810,7 @@ class CredentialVariableMetadata:
         STRING = 'string'
         LINK = 'link'
 
+
     class LinkStatusEnum(str, Enum):
         """
         The status of the link.
@@ -11698,6 +10818,7 @@ class CredentialVariableMetadata:
 
         NORMAL = 'normal'
         BROKEN = 'broken'
+
 
 
 class Dependencies:
@@ -12172,6 +11293,7 @@ class ExternalSource:
         IBM_CLOUD_CATALOG = 'ibm_cloud_catalog'
 
 
+
 class GitSource:
     """
     The connection details to the Git source repository.
@@ -12190,8 +11312,8 @@ class GitSource:
           the Git repository.
     :param str git_commit: (optional) The git commit hash used to fetch the
           repository.
-    :param str git_commit_timestamp: (optional) The timestamp of the git commit hash
-          used to fetch the repository.
+    :param datetime git_commit_timestamp: (optional) The timestamp of the git commit
+          hash used to fetch the repository.
     """
 
     def __init__(
@@ -12204,7 +11326,7 @@ class GitSource:
         git_release: Optional[str] = None,
         git_branch: Optional[str] = None,
         git_commit: Optional[str] = None,
-        git_commit_timestamp: Optional[str] = None,
+        git_commit_timestamp: Optional[datetime] = None,
     ) -> None:
         """
         Initialize a GitSource object.
@@ -12250,7 +11372,7 @@ class GitSource:
         if (git_commit := _dict.get('git_commit')) is not None:
             args['git_commit'] = git_commit
         if (git_commit_timestamp := _dict.get('git_commit_timestamp')) is not None:
-            args['git_commit_timestamp'] = git_commit_timestamp
+            args['git_commit_timestamp'] = string_to_datetime(git_commit_timestamp)
         return cls(**args)
 
     @classmethod
@@ -12276,7 +11398,7 @@ class GitSource:
         if hasattr(self, 'git_commit') and getattr(self, 'git_commit') is not None:
             _dict['git_commit'] = getattr(self, 'git_commit')
         if hasattr(self, 'git_commit_timestamp') and getattr(self, 'git_commit_timestamp') is not None:
-            _dict['git_commit_timestamp'] = getattr(self, 'git_commit_timestamp')
+            _dict['git_commit_timestamp'] = datetime_to_string(getattr(self, 'git_commit_timestamp'))
         return _dict
 
     def _to_dict(self):
@@ -12298,42 +11420,56 @@ class GitSource:
         return not self == other
 
 
-class InjectTerraformTemplateInnerTftParametersItem:
+class Group:
     """
-    InjectTerraformTemplateInnerTftParametersItem.
+    Inventory host group.
 
-    :param str name: (optional) Key name to replace.
-    :param str value: (optional) Value to replace.
+    :param str name: (optional) Name of the group.
+    :param List[VariableData] vars: (optional) group level variables.
+    :param CredentialVariableData credentials: (optional) User editable credential
+          variable data and system generated reference to the value.
+    :param List[Host] hosts: (optional) List of hosts in the group.
     """
 
     def __init__(
         self,
         *,
         name: Optional[str] = None,
-        value: Optional[str] = None,
+        vars: Optional[List['VariableData']] = None,
+        credentials: Optional['CredentialVariableData'] = None,
+        hosts: Optional[List['Host']] = None,
     ) -> None:
         """
-        Initialize a InjectTerraformTemplateInnerTftParametersItem object.
+        Initialize a Group object.
 
-        :param str name: (optional) Key name to replace.
-        :param str value: (optional) Value to replace.
+        :param str name: (optional) Name of the group.
+        :param List[VariableData] vars: (optional) group level variables.
+        :param CredentialVariableData credentials: (optional) User editable
+               credential variable data and system generated reference to the value.
+        :param List[Host] hosts: (optional) List of hosts in the group.
         """
         self.name = name
-        self.value = value
+        self.vars = vars
+        self.credentials = credentials
+        self.hosts = hosts
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'InjectTerraformTemplateInnerTftParametersItem':
-        """Initialize a InjectTerraformTemplateInnerTftParametersItem object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'Group':
+        """Initialize a Group object from a json dictionary."""
         args = {}
         if (name := _dict.get('name')) is not None:
             args['name'] = name
-        if (value := _dict.get('value')) is not None:
-            args['value'] = value
+        if (vars := _dict.get('vars')) is not None:
+            args['vars'] = [VariableData.from_dict(v) for v in vars]
+        if (credentials := _dict.get('credentials')) is not None:
+            args['credentials'] = CredentialVariableData.from_dict(credentials)
+        if (hosts := _dict.get('hosts')) is not None:
+            args['hosts'] = [Host.from_dict(v) for v in hosts]
         return cls(**args)
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a InjectTerraformTemplateInnerTftParametersItem object from a json dictionary."""
+        """Initialize a Group object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
@@ -12341,8 +11477,27 @@ class InjectTerraformTemplateInnerTftParametersItem:
         _dict = {}
         if hasattr(self, 'name') and self.name is not None:
             _dict['name'] = self.name
-        if hasattr(self, 'value') and self.value is not None:
-            _dict['value'] = self.value
+        if hasattr(self, 'vars') and self.vars is not None:
+            vars_list = []
+            for v in self.vars:
+                if isinstance(v, dict):
+                    vars_list.append(v)
+                else:
+                    vars_list.append(v.to_dict())
+            _dict['vars'] = vars_list
+        if hasattr(self, 'credentials') and self.credentials is not None:
+            if isinstance(self.credentials, dict):
+                _dict['credentials'] = self.credentials
+            else:
+                _dict['credentials'] = self.credentials.to_dict()
+        if hasattr(self, 'hosts') and self.hosts is not None:
+            hosts_list = []
+            for v in self.hosts:
+                if isinstance(v, dict):
+                    hosts_list.append(v)
+                else:
+                    hosts_list.append(v.to_dict())
+            _dict['hosts'] = hosts_list
         return _dict
 
     def _to_dict(self):
@@ -12350,16 +11505,109 @@ class InjectTerraformTemplateInnerTftParametersItem:
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this InjectTerraformTemplateInnerTftParametersItem object."""
+        """Return a `str` version of this Group object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'InjectTerraformTemplateInnerTftParametersItem') -> bool:
+    def __eq__(self, other: 'Group') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'InjectTerraformTemplateInnerTftParametersItem') -> bool:
+    def __ne__(self, other: 'Group') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class Host:
+    """
+    This defines the inventory host.
+
+    :param str alias: (optional) Host alias name.
+    :param str name: (optional) Host name/IP.
+    :param CredentialVariableData credential: (optional) User editable credential
+          variable data and system generated reference to the value.
+    :param List[VariableData] vars: (optional) host level variables.
+    """
+
+    def __init__(
+        self,
+        *,
+        alias: Optional[str] = None,
+        name: Optional[str] = None,
+        credential: Optional['CredentialVariableData'] = None,
+        vars: Optional[List['VariableData']] = None,
+    ) -> None:
+        """
+        Initialize a Host object.
+
+        :param str alias: (optional) Host alias name.
+        :param str name: (optional) Host name/IP.
+        :param CredentialVariableData credential: (optional) User editable
+               credential variable data and system generated reference to the value.
+        :param List[VariableData] vars: (optional) host level variables.
+        """
+        self.alias = alias
+        self.name = name
+        self.credential = credential
+        self.vars = vars
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'Host':
+        """Initialize a Host object from a json dictionary."""
+        args = {}
+        if (alias := _dict.get('alias')) is not None:
+            args['alias'] = alias
+        if (name := _dict.get('name')) is not None:
+            args['name'] = name
+        if (credential := _dict.get('credential')) is not None:
+            args['credential'] = CredentialVariableData.from_dict(credential)
+        if (vars := _dict.get('vars')) is not None:
+            args['vars'] = [VariableData.from_dict(v) for v in vars]
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a Host object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'alias') and self.alias is not None:
+            _dict['alias'] = self.alias
+        if hasattr(self, 'name') and self.name is not None:
+            _dict['name'] = self.name
+        if hasattr(self, 'credential') and self.credential is not None:
+            if isinstance(self.credential, dict):
+                _dict['credential'] = self.credential
+            else:
+                _dict['credential'] = self.credential.to_dict()
+        if hasattr(self, 'vars') and self.vars is not None:
+            vars_list = []
+            for v in self.vars:
+                if isinstance(v, dict):
+                    vars_list.append(v)
+                else:
+                    vars_list.append(v.to_dict())
+            _dict['vars'] = vars_list
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this Host object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'Host') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'Host') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -12377,8 +11625,8 @@ class InjectTerraformTemplateInner:
     :param str injection_type: (optional) Injection type. Default is 'override'.
     :param str tft_name: (optional) Terraform template name. Maps to folder name in
           git repo.
-    :param List[InjectTerraformTemplateInnerTftParametersItem] tft_parameters:
-          (optional)
+    :param List[TftParametersObject] tft_parameters: (optional) List of terraform
+          template parameters.
     """
 
     def __init__(
@@ -12389,7 +11637,7 @@ class InjectTerraformTemplateInner:
         tft_prefix: Optional[str] = None,
         injection_type: Optional[str] = None,
         tft_name: Optional[str] = None,
-        tft_parameters: Optional[List['InjectTerraformTemplateInnerTftParametersItem']] = None,
+        tft_parameters: Optional[List['TftParametersObject']] = None,
     ) -> None:
         """
         Initialize a InjectTerraformTemplateInner object.
@@ -12404,8 +11652,8 @@ class InjectTerraformTemplateInner:
                'override'.
         :param str tft_name: (optional) Terraform template name. Maps to folder
                name in git repo.
-        :param List[InjectTerraformTemplateInnerTftParametersItem] tft_parameters:
-               (optional)
+        :param List[TftParametersObject] tft_parameters: (optional) List of
+               terraform template parameters.
         """
         self.tft_git_url = tft_git_url
         self.tft_git_token = tft_git_token
@@ -12429,9 +11677,7 @@ class InjectTerraformTemplateInner:
         if (tft_name := _dict.get('tft_name')) is not None:
             args['tft_name'] = tft_name
         if (tft_parameters := _dict.get('tft_parameters')) is not None:
-            args['tft_parameters'] = [
-                InjectTerraformTemplateInnerTftParametersItem.from_dict(v) for v in tft_parameters
-            ]
+            args['tft_parameters'] = [TftParametersObject.from_dict(v) for v in tft_parameters]
         return cls(**args)
 
     @classmethod
@@ -12508,6 +11754,17 @@ class InventoryResourceRecord:
     :param List[str] resource_queries: (optional) Input resource queries that is
           used to dynamically generate  the inventory of host and host group for the
           playbook.
+    :param str connection_type: (optional) connection type to be ssh or wirm.
+    :param List[CredentialVariableData] credentials: (optional) common credentials
+          for the inventory.
+    :param CredentialVariableData common_credentials: (optional) User editable
+          credential variable data and system generated reference to the value.
+    :param BastionResourceDefinition bastion: (optional) Describes a bastion
+          resource.
+    :param CredentialVariableData bastion_credential: (optional) User editable
+          credential variable data and system generated reference to the value.
+    :param InventoryView inventory_view: (optional) Inventories' structured view for
+          the provided inventory.
     """
 
     def __init__(
@@ -12524,6 +11781,12 @@ class InventoryResourceRecord:
         updated_by: Optional[str] = None,
         inventories_ini: Optional[str] = None,
         resource_queries: Optional[List[str]] = None,
+        connection_type: Optional[str] = None,
+        credentials: Optional[List['CredentialVariableData']] = None,
+        common_credentials: Optional['CredentialVariableData'] = None,
+        bastion: Optional['BastionResourceDefinition'] = None,
+        bastion_credential: Optional['CredentialVariableData'] = None,
+        inventory_view: Optional['InventoryView'] = None,
     ) -> None:
         """
         Initialize a InventoryResourceRecord object.
@@ -12545,6 +11808,17 @@ class InventoryResourceRecord:
         :param List[str] resource_queries: (optional) Input resource queries that
                is used to dynamically generate  the inventory of host and host group for
                the playbook.
+        :param str connection_type: (optional) connection type to be ssh or wirm.
+        :param List[CredentialVariableData] credentials: (optional) common
+               credentials for the inventory.
+        :param CredentialVariableData common_credentials: (optional) User editable
+               credential variable data and system generated reference to the value.
+        :param BastionResourceDefinition bastion: (optional) Describes a bastion
+               resource.
+        :param CredentialVariableData bastion_credential: (optional) User editable
+               credential variable data and system generated reference to the value.
+        :param InventoryView inventory_view: (optional) Inventories' structured
+               view for the provided inventory.
         """
         self.name = name
         self.id = id
@@ -12557,6 +11831,12 @@ class InventoryResourceRecord:
         self.updated_by = updated_by
         self.inventories_ini = inventories_ini
         self.resource_queries = resource_queries
+        self.connection_type = connection_type
+        self.credentials = credentials
+        self.common_credentials = common_credentials
+        self.bastion = bastion
+        self.bastion_credential = bastion_credential
+        self.inventory_view = inventory_view
 
     @classmethod
     def from_dict(cls, _dict: Dict) -> 'InventoryResourceRecord':
@@ -12584,6 +11864,18 @@ class InventoryResourceRecord:
             args['inventories_ini'] = inventories_ini
         if (resource_queries := _dict.get('resource_queries')) is not None:
             args['resource_queries'] = resource_queries
+        if (connection_type := _dict.get('connection_type')) is not None:
+            args['connection_type'] = connection_type
+        if (credentials := _dict.get('credentials')) is not None:
+            args['credentials'] = [CredentialVariableData.from_dict(v) for v in credentials]
+        if (common_credentials := _dict.get('common_credentials')) is not None:
+            args['common_credentials'] = CredentialVariableData.from_dict(common_credentials)
+        if (bastion := _dict.get('bastion')) is not None:
+            args['bastion'] = BastionResourceDefinition.from_dict(bastion)
+        if (bastion_credential := _dict.get('bastion_credential')) is not None:
+            args['bastion_credential'] = CredentialVariableData.from_dict(bastion_credential)
+        if (inventory_view := _dict.get('inventory_view')) is not None:
+            args['inventory_view'] = InventoryView.from_dict(inventory_view)
         return cls(**args)
 
     @classmethod
@@ -12616,6 +11908,36 @@ class InventoryResourceRecord:
             _dict['inventories_ini'] = self.inventories_ini
         if hasattr(self, 'resource_queries') and self.resource_queries is not None:
             _dict['resource_queries'] = self.resource_queries
+        if hasattr(self, 'connection_type') and self.connection_type is not None:
+            _dict['connection_type'] = self.connection_type
+        if hasattr(self, 'credentials') and self.credentials is not None:
+            credentials_list = []
+            for v in self.credentials:
+                if isinstance(v, dict):
+                    credentials_list.append(v)
+                else:
+                    credentials_list.append(v.to_dict())
+            _dict['credentials'] = credentials_list
+        if hasattr(self, 'common_credentials') and self.common_credentials is not None:
+            if isinstance(self.common_credentials, dict):
+                _dict['common_credentials'] = self.common_credentials
+            else:
+                _dict['common_credentials'] = self.common_credentials.to_dict()
+        if hasattr(self, 'bastion') and self.bastion is not None:
+            if isinstance(self.bastion, dict):
+                _dict['bastion'] = self.bastion
+            else:
+                _dict['bastion'] = self.bastion.to_dict()
+        if hasattr(self, 'bastion_credential') and self.bastion_credential is not None:
+            if isinstance(self.bastion_credential, dict):
+                _dict['bastion_credential'] = self.bastion_credential
+            else:
+                _dict['bastion_credential'] = self.bastion_credential.to_dict()
+        if hasattr(self, 'inventory_view') and self.inventory_view is not None:
+            if isinstance(self.inventory_view, dict):
+                _dict['inventory_view'] = self.inventory_view
+            else:
+                _dict['inventory_view'] = self.inventory_view.to_dict()
         return _dict
 
     def _to_dict(self):
@@ -12648,6 +11970,7 @@ class InventoryResourceRecord:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
+
 
 
 class InventoryResourceRecordList:
@@ -12740,6 +12063,70 @@ class InventoryResourceRecordList:
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'InventoryResourceRecordList') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class InventoryView:
+    """
+    Inventories' structured view for the provided inventory.
+
+    :param List[Group] groups: (optional) List of inventory groups.
+    """
+
+    def __init__(
+        self,
+        *,
+        groups: Optional[List['Group']] = None,
+    ) -> None:
+        """
+        Initialize a InventoryView object.
+
+        :param List[Group] groups: (optional) List of inventory groups.
+        """
+        self.groups = groups
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'InventoryView':
+        """Initialize a InventoryView object from a json dictionary."""
+        args = {}
+        if (groups := _dict.get('groups')) is not None:
+            args['groups'] = [Group.from_dict(v) for v in groups]
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a InventoryView object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'groups') and self.groups is not None:
+            groups_list = []
+            for v in self.groups:
+                if isinstance(v, dict):
+                    groups_list.append(v)
+                else:
+                    groups_list.append(v.to_dict())
+            _dict['groups'] = groups_list
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this InventoryView object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'InventoryView') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'InventoryView') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -13082,6 +12469,7 @@ class Job:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
+
     class CommandNameEnum(str, Enum):
         """
         Schematics job command name.
@@ -13110,6 +12498,7 @@ class Job:
         REPOSITORY_PROCESS = 'repository_process'
         TERRAFORM_COMMANDS = 'terraform_commands'
 
+
     class LocationEnum(str, Enum):
         """
         List of locations supported by IBM Cloud Schematics service.  While creating your
@@ -13122,6 +12511,7 @@ class Job:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
+
 
 
 class JobData:
@@ -13237,6 +12627,7 @@ class JobData:
         ACTION_JOB = 'action_job'
         SYSTEM_JOB = 'system_job'
         FLOW_JOB = 'flow-job'
+
 
 
 class JobDataAction:
@@ -13845,6 +13236,7 @@ class JobDataWorkItem:
         IBM_CLOUD_CATALOG = 'ibm_cloud_catalog'
 
 
+
 class JobDataWorkItemLastJob:
     """
     Status of the last job executed by the workitem.
@@ -13958,6 +13350,7 @@ class JobDataWorkItemLastJob:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
+
     class CommandNameEnum(str, Enum):
         """
         Schematics job command name.
@@ -13986,6 +13379,7 @@ class JobDataWorkItemLastJob:
         REPOSITORY_PROCESS = 'repository_process'
         TERRAFORM_COMMANDS = 'terraform_commands'
 
+
     class JobStatusEnum(str, Enum):
         """
         Status of Jobs.
@@ -13999,6 +13393,7 @@ class JobDataWorkItemLastJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
+
 
 
 class JobDataWorkspace:
@@ -14353,6 +13748,7 @@ class JobFileData:
         LOG_INSIGHTS_FILE = 'log_insights_file'
 
 
+
 class JobFileDataSummary:
     """
     JobFileDataSummary.
@@ -14433,6 +13829,7 @@ class JobFileDataSummary:
 
         NUMBER = 'number'
         STRING = 'string'
+
 
 
 class JobList:
@@ -14766,6 +14163,7 @@ class JobLite:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
+
     class CommandNameEnum(str, Enum):
         """
         Schematics job command name.
@@ -14794,6 +14192,7 @@ class JobLite:
         REPOSITORY_PROCESS = 'repository_process'
         TERRAFORM_COMMANDS = 'terraform_commands'
 
+
     class LocationEnum(str, Enum):
         """
         List of locations supported by IBM Cloud Schematics service.  While creating your
@@ -14806,6 +14205,7 @@ class JobLite:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
+
 
 
 class JobLog:
@@ -14921,6 +14321,7 @@ class JobLog:
         RTF = 'rtf'
 
 
+
 class JobLogSummary:
     """
     Job log summary record.
@@ -14931,7 +14332,7 @@ class JobLogSummary:
     :param datetime log_analyzed_till: (optional) Job log update timestamp.
     :param float elapsed_time: (optional) Job log elapsed time (log_analyzed_till -
           log_start_at).
-    :param List[JobLogSummaryLogErrors] log_errors: (optional) Job log errors.
+    :param List[JobLogSummaryLogErrorsInner] log_errors: (optional) Job log errors.
     :param JobLogSummaryRepoDownloadJob repo_download_job: (optional) Repo download
           Job log summary.
     :param JobLogSummaryWorkspaceJob workspace_job: (optional) Workspace Job log
@@ -14949,7 +14350,7 @@ class JobLogSummary:
         log_start_at: Optional[datetime] = None,
         log_analyzed_till: Optional[datetime] = None,
         elapsed_time: Optional[float] = None,
-        log_errors: Optional[List['JobLogSummaryLogErrors']] = None,
+        log_errors: Optional[List['JobLogSummaryLogErrorsInner']] = None,
         repo_download_job: Optional['JobLogSummaryRepoDownloadJob'] = None,
         workspace_job: Optional['JobLogSummaryWorkspaceJob'] = None,
         flow_job: Optional['JobLogSummaryFlowJob'] = None,
@@ -14996,7 +14397,7 @@ class JobLogSummary:
         if (elapsed_time := _dict.get('elapsed_time')) is not None:
             args['elapsed_time'] = elapsed_time
         if (log_errors := _dict.get('log_errors')) is not None:
-            args['log_errors'] = [JobLogSummaryLogErrors.from_dict(v) for v in log_errors]
+            args['log_errors'] = [JobLogSummaryLogErrorsInner.from_dict(v) for v in log_errors]
         if (repo_download_job := _dict.get('repo_download_job')) is not None:
             args['repo_download_job'] = JobLogSummaryRepoDownloadJob.from_dict(repo_download_job)
         if (workspace_job := _dict.get('workspace_job')) is not None:
@@ -15090,6 +14491,7 @@ class JobLogSummary:
         ACTION_JOB = 'action_job'
         SYSTEM_JOB = 'system_job'
         FLOW_JOB = 'flow_job'
+
 
 
 class JobLogSummaryWorkitems:
@@ -15376,7 +14778,8 @@ class JobLogSummaryFlowJob:
     :param float workitems_pending: (optional) Number of workitems pending in the
           flow.
     :param float workitems_failed: (optional) Number of workitems failed.
-    :param List[JobLogSummaryWorkitems] workitems: (optional)
+    :param List[JobLogSummaryWorkitems] workitems: (optional) Job log summary of the
+          flow workitem.
     """
 
     def __init__(
@@ -15390,7 +14793,8 @@ class JobLogSummaryFlowJob:
         """
         Initialize a JobLogSummaryFlowJob object.
 
-        :param List[JobLogSummaryWorkitems] workitems: (optional)
+        :param List[JobLogSummaryWorkitems] workitems: (optional) Job log summary
+               of the flow workitem.
         """
         self.workitems_completed = workitems_completed
         self.workitems_pending = workitems_pending
@@ -15454,9 +14858,9 @@ class JobLogSummaryFlowJob:
         return not self == other
 
 
-class JobLogSummaryLogErrors:
+class JobLogSummaryLogErrorsInner:
     """
-    JobLogSummaryLogErrors.
+    JobLogSummaryLogErrorsInner.
 
     :param str error_code: (optional) Error code in the Log.
     :param str error_msg: (optional) Summary error message in the log.
@@ -15471,7 +14875,7 @@ class JobLogSummaryLogErrors:
         error_count: Optional[float] = None,
     ) -> None:
         """
-        Initialize a JobLogSummaryLogErrors object.
+        Initialize a JobLogSummaryLogErrorsInner object.
 
         :param str error_code: (optional) Error code in the Log.
         :param str error_msg: (optional) Summary error message in the log.
@@ -15482,8 +14886,8 @@ class JobLogSummaryLogErrors:
         self.error_count = error_count
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'JobLogSummaryLogErrors':
-        """Initialize a JobLogSummaryLogErrors object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'JobLogSummaryLogErrorsInner':
+        """Initialize a JobLogSummaryLogErrorsInner object from a json dictionary."""
         args = {}
         if (error_code := _dict.get('error_code')) is not None:
             args['error_code'] = error_code
@@ -15495,7 +14899,7 @@ class JobLogSummaryLogErrors:
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a JobLogSummaryLogErrors object from a json dictionary."""
+        """Initialize a JobLogSummaryLogErrorsInner object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
@@ -15514,16 +14918,16 @@ class JobLogSummaryLogErrors:
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this JobLogSummaryLogErrors object."""
+        """Return a `str` version of this JobLogSummaryLogErrorsInner object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'JobLogSummaryLogErrors') -> bool:
+    def __eq__(self, other: 'JobLogSummaryLogErrorsInner') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'JobLogSummaryLogErrors') -> bool:
+    def __ne__(self, other: 'JobLogSummaryLogErrorsInner') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -16003,6 +15407,7 @@ class JobStatusAction:
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
+
     class BastionStatusCodeEnum(str, Enum):
         """
         Status of Resources.
@@ -16013,6 +15418,7 @@ class JobStatusAction:
         PROCESSING = 'processing'
         ERROR = 'error'
 
+
     class TargetsStatusCodeEnum(str, Enum):
         """
         Status of Resources.
@@ -16022,6 +15428,7 @@ class JobStatusAction:
         READY = 'ready'
         PROCESSING = 'processing'
         ERROR = 'error'
+
 
 
 class JobStatusFlow:
@@ -16146,6 +15553,7 @@ class JobStatusFlow:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class JobStatusSchematicsResources:
     """
     schematics Resources Job Status.
@@ -16244,6 +15652,7 @@ class JobStatusSchematicsResources:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class JobStatusSystem:
     """
     System Job Status.
@@ -16286,9 +15695,7 @@ class JobStatusSystem:
         if (system_status_code := _dict.get('system_status_code')) is not None:
             args['system_status_code'] = system_status_code
         if (schematics_resource_status := _dict.get('schematics_resource_status')) is not None:
-            args['schematics_resource_status'] = [
-                JobStatusSchematicsResources.from_dict(v) for v in schematics_resource_status
-            ]
+            args['schematics_resource_status'] = [JobStatusSchematicsResources.from_dict(v) for v in schematics_resource_status]
         if (updated_at := _dict.get('updated_at')) is not None:
             args['updated_at'] = string_to_datetime(updated_at)
         return cls(**args)
@@ -16348,6 +15755,7 @@ class JobStatusSystem:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
+
 
 
 class JobStatusTemplate:
@@ -16464,6 +15872,7 @@ class JobStatusTemplate:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class JobStatusWorkitem:
     """
     Individual workitem status info.
@@ -16575,6 +15984,7 @@ class JobStatusWorkitem:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
+
 
 
 class JobStatusWorkspace:
@@ -16716,6 +16126,7 @@ class JobStatusWorkspace:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
+
 class KMSDiscovery:
     """
     Discover kms instances in the account based on location.
@@ -16823,7 +16234,7 @@ class KMSInstances:
     :param str kms_name: (optional) The kms instance name.
     :param str kms_private_endpoint: (optional) The kms instance private endpoints.
     :param str kms_public_endpoint: (optional) The kms instance public endpoints.
-    :param List[KMSInstancesKeys] keys: (optional) Detailed list of keys.
+    :param List[KMSInstancesKeysInner] keys: (optional) Detailed list of keys.
     """
 
     def __init__(
@@ -16836,7 +16247,7 @@ class KMSInstances:
         kms_name: Optional[str] = None,
         kms_private_endpoint: Optional[str] = None,
         kms_public_endpoint: Optional[str] = None,
-        keys: Optional[List['KMSInstancesKeys']] = None,
+        keys: Optional[List['KMSInstancesKeysInner']] = None,
     ) -> None:
         """
         Initialize a KMSInstances object.
@@ -16853,7 +16264,7 @@ class KMSInstances:
                endpoints.
         :param str kms_public_endpoint: (optional) The kms instance public
                endpoints.
-        :param List[KMSInstancesKeys] keys: (optional) Detailed list of keys.
+        :param List[KMSInstancesKeysInner] keys: (optional) Detailed list of keys.
         """
         self.location = location
         self.encryption_scheme = encryption_scheme
@@ -16883,7 +16294,7 @@ class KMSInstances:
         if (kms_public_endpoint := _dict.get('kms_public_endpoint')) is not None:
             args['kms_public_endpoint'] = kms_public_endpoint
         if (keys := _dict.get('keys')) is not None:
-            args['keys'] = [KMSInstancesKeys.from_dict(v) for v in keys]
+            args['keys'] = [KMSInstancesKeysInner.from_dict(v) for v in keys]
         return cls(**args)
 
     @classmethod
@@ -16937,9 +16348,9 @@ class KMSInstances:
         return not self == other
 
 
-class KMSInstancesKeys:
+class KMSInstancesKeysInner:
     """
-    KMSInstancesKeys.
+    KMSInstancesKeysInner.
 
     :param str name: (optional) The name of the root key.
     :param str crn: (optional) The kms CRN of the root key.
@@ -16954,7 +16365,7 @@ class KMSInstancesKeys:
         error: Optional[str] = None,
     ) -> None:
         """
-        Initialize a KMSInstancesKeys object.
+        Initialize a KMSInstancesKeysInner object.
 
         :param str name: (optional) The name of the root key.
         :param str crn: (optional) The kms CRN of the root key.
@@ -16965,8 +16376,8 @@ class KMSInstancesKeys:
         self.error = error
 
     @classmethod
-    def from_dict(cls, _dict: Dict) -> 'KMSInstancesKeys':
-        """Initialize a KMSInstancesKeys object from a json dictionary."""
+    def from_dict(cls, _dict: Dict) -> 'KMSInstancesKeysInner':
+        """Initialize a KMSInstancesKeysInner object from a json dictionary."""
         args = {}
         if (name := _dict.get('name')) is not None:
             args['name'] = name
@@ -16978,7 +16389,7 @@ class KMSInstancesKeys:
 
     @classmethod
     def _from_dict(cls, _dict):
-        """Initialize a KMSInstancesKeys object from a json dictionary."""
+        """Initialize a KMSInstancesKeysInner object from a json dictionary."""
         return cls.from_dict(_dict)
 
     def to_dict(self) -> Dict:
@@ -16997,16 +16408,16 @@ class KMSInstancesKeys:
         return self.to_dict()
 
     def __str__(self) -> str:
-        """Return a `str` version of this KMSInstancesKeys object."""
+        """Return a `str` version of this KMSInstancesKeysInner object."""
         return json.dumps(self.to_dict(), indent=2)
 
-    def __eq__(self, other: 'KMSInstancesKeys') -> bool:
+    def __eq__(self, other: 'KMSInstancesKeysInner') -> bool:
         """Return `true` when self and other are equal, false otherwise."""
         if not isinstance(other, self.__class__):
             return False
         return self.__dict__ == other.__dict__
 
-    def __ne__(self, other: 'KMSInstancesKeys') -> bool:
+    def __ne__(self, other: 'KMSInstancesKeysInner') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -17646,6 +17057,202 @@ class LogSummary:
         return not self == other
 
 
+class OutputValueDetail:
+    """
+    Details of a Terraform output value with name, description, sensitivity, type, and
+    value information.
+
+    :param str name: (optional) The name of the output variable.
+    :param str description: (optional) Description of the output value.
+    :param bool sensitive: (optional) Indicates whether the output value is
+          sensitive.
+    :param object type: (optional) The data type of the output value (e.g., string,
+          number, list, map).
+    :param object value: (optional) The actual output value (can be any type -
+          string, number, object, array, etc.).
+    """
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        sensitive: Optional[bool] = None,
+        type: Optional[object] = None,
+        value: Optional[object] = None,
+    ) -> None:
+        """
+        Initialize a OutputValueDetail object.
+
+        :param str name: (optional) The name of the output variable.
+        :param str description: (optional) Description of the output value.
+        :param bool sensitive: (optional) Indicates whether the output value is
+               sensitive.
+        :param object type: (optional) The data type of the output value (e.g.,
+               string, number, list, map).
+        :param object value: (optional) The actual output value (can be any type -
+               string, number, object, array, etc.).
+        """
+        self.name = name
+        self.description = description
+        self.sensitive = sensitive
+        self.type = type
+        self.value = value
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'OutputValueDetail':
+        """Initialize a OutputValueDetail object from a json dictionary."""
+        args = {}
+        if (name := _dict.get('name')) is not None:
+            args['name'] = name
+        if (description := _dict.get('description')) is not None:
+            args['description'] = description
+        if (sensitive := _dict.get('sensitive')) is not None:
+            args['sensitive'] = sensitive
+        if (type := _dict.get('type')) is not None:
+            args['type'] = type
+        if (value := _dict.get('value')) is not None:
+            args['value'] = value
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a OutputValueDetail object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'name') and self.name is not None:
+            _dict['name'] = self.name
+        if hasattr(self, 'description') and self.description is not None:
+            _dict['description'] = self.description
+        if hasattr(self, 'sensitive') and self.sensitive is not None:
+            _dict['sensitive'] = self.sensitive
+        if hasattr(self, 'type') and self.type is not None:
+            _dict['type'] = self.type
+        if hasattr(self, 'value') and self.value is not None:
+            _dict['value'] = self.value
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this OutputValueDetail object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'OutputValueDetail') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'OutputValueDetail') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class OutputValuesObject:
+    """
+    Terraform output values that are defined in the Terraform template or IBM Cloud
+    software template.
+
+    :param str id: (optional) The ID that was assigned to your Terraform template or
+          IBM Cloud catalog software template.
+    :param str folder: (optional) The subfolder in the GitHub or GitLab repository
+          where your Terraform template is stored. If the template is stored in the root
+          directory, `.` is returned.
+    :param str type: (optional) The Terraform version that was used to apply your
+          template.
+    :param List[OutputValueDetail] values: A list of Terraform output values.
+    """
+
+    def __init__(
+        self,
+        values: List['OutputValueDetail'],
+        *,
+        id: Optional[str] = None,
+        folder: Optional[str] = None,
+        type: Optional[str] = None,
+    ) -> None:
+        """
+        Initialize a OutputValuesObject object.
+
+        :param List[OutputValueDetail] values: A list of Terraform output values.
+        :param str id: (optional) The ID that was assigned to your Terraform
+               template or IBM Cloud catalog software template.
+        :param str folder: (optional) The subfolder in the GitHub or GitLab
+               repository where your Terraform template is stored. If the template is
+               stored in the root directory, `.` is returned.
+        :param str type: (optional) The Terraform version that was used to apply
+               your template.
+        """
+        self.id = id
+        self.folder = folder
+        self.type = type
+        self.values = values
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'OutputValuesObject':
+        """Initialize a OutputValuesObject object from a json dictionary."""
+        args = {}
+        if (id := _dict.get('id')) is not None:
+            args['id'] = id
+        if (folder := _dict.get('folder')) is not None:
+            args['folder'] = folder
+        if (type := _dict.get('type')) is not None:
+            args['type'] = type
+        if (values := _dict.get('values')) is not None:
+            args['values'] = [OutputValueDetail.from_dict(v) for v in values]
+        else:
+            raise ValueError('Required property \'values\' not present in OutputValuesObject JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a OutputValuesObject object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'id') and self.id is not None:
+            _dict['id'] = self.id
+        if hasattr(self, 'folder') and self.folder is not None:
+            _dict['folder'] = self.folder
+        if hasattr(self, 'type') and self.type is not None:
+            _dict['type'] = self.type
+        if hasattr(self, 'values') and self.values is not None:
+            values_list = []
+            for v in self.values:
+                if isinstance(v, dict):
+                    values_list.append(v)
+                else:
+                    values_list.append(v.to_dict())
+            _dict['values'] = values_list
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this OutputValuesObject object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'OutputValuesObject') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'OutputValuesObject') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
 class OutputValuesInner:
     """
     OutputValuesInner.
@@ -17753,8 +17360,8 @@ class Policy:
           region, since it cannot be changed.  Note, this does not limit the location of
           the IBM Cloud resources, provisioned using Schematics.
     :param UserState state: (optional) User defined status of the Schematics object.
-    :param str kind: (optional) Policy kind or categories for managing and deriving
-          policy decision
+    :param str kind: Policy kind or categories for managing and deriving policy
+          decision
             * `agent_assignment_policy` Agent assignment policy for job execution.
     :param PolicyObjects target: (optional) The objects for the Schematics policy.
     :param PolicyParameter parameter: (optional) The parameter to tune the
@@ -17771,6 +17378,7 @@ class Policy:
 
     def __init__(
         self,
+        kind: str,
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
@@ -17778,7 +17386,6 @@ class Policy:
         tags: Optional[List[str]] = None,
         location: Optional[str] = None,
         state: Optional['UserState'] = None,
-        kind: Optional[str] = None,
         target: Optional['PolicyObjects'] = None,
         parameter: Optional['PolicyParameter'] = None,
         id: Optional[str] = None,
@@ -17792,6 +17399,9 @@ class Policy:
         """
         Initialize a Policy object.
 
+        :param str kind: Policy kind or categories for managing and deriving policy
+               decision
+                 * `agent_assignment_policy` Agent assignment policy for job execution.
         :param str name: (optional) Name of Schematics customization policy.
         :param str description: (optional) The description of Schematics
                customization policy.
@@ -17805,9 +17415,6 @@ class Policy:
                location of the IBM Cloud resources, provisioned using Schematics.
         :param UserState state: (optional) User defined status of the Schematics
                object.
-        :param str kind: (optional) Policy kind or categories for managing and
-               deriving policy decision
-                 * `agent_assignment_policy` Agent assignment policy for job execution.
         :param PolicyObjects target: (optional) The objects for the Schematics
                policy.
         :param PolicyParameter parameter: (optional) The parameter to tune the
@@ -17850,6 +17457,8 @@ class Policy:
             args['state'] = UserState.from_dict(state)
         if (kind := _dict.get('kind')) is not None:
             args['kind'] = kind
+        else:
+            raise ValueError('Required property \'kind\' not present in Policy JSON')
         if (target := _dict.get('target')) is not None:
             args['target'] = PolicyObjects.from_dict(target)
         if (parameter := _dict.get('parameter')) is not None:
@@ -17958,6 +17567,7 @@ class Policy:
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
 
+
     class KindEnum(str, Enum):
         """
         Policy kind or categories for managing and deriving policy decision
@@ -17965,6 +17575,7 @@ class Policy:
         """
 
         AGENT_ASSIGNMENT_POLICY = 'agent_assignment_policy'
+
 
 
 class PolicyList:
@@ -18233,6 +17844,7 @@ class PolicyLite:
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
 
+
     class PolicyKindEnum(str, Enum):
         """
         Policy kind or categories for managing and deriving policy decision
@@ -18240,6 +17852,7 @@ class PolicyLite:
         """
 
         AGENT_ASSIGNMENT_POLICY = 'agent_assignment_policy'
+
 
 
 class PolicyObjectSelector:
@@ -18336,6 +17949,7 @@ class PolicyObjectSelector:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
+
     class LocationsEnum(str, Enum):
         """
         List of locations supported by IBM Cloud Schematics service.  While creating your
@@ -18348,6 +17962,7 @@ class PolicyObjectSelector:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
+
 
 
 class PolicyObjects:
@@ -18444,6 +18059,7 @@ class PolicyObjects:
         SCOPED = 'scoped'
 
 
+
 class PolicyParameter:
     """
     The parameter to tune the Schematics policy.
@@ -18470,9 +18086,7 @@ class PolicyParameter:
         """Initialize a PolicyParameter object from a json dictionary."""
         args = {}
         if (agent_assignment_policy_parameter := _dict.get('agent_assignment_policy_parameter')) is not None:
-            args['agent_assignment_policy_parameter'] = AgentAssignmentPolicyParameter.from_dict(
-                agent_assignment_policy_parameter
-            )
+            args['agent_assignment_policy_parameter'] = AgentAssignmentPolicyParameter.from_dict(agent_assignment_policy_parameter)
         return cls(**args)
 
     @classmethod
@@ -18619,7 +18233,8 @@ class ResourceQuery:
     Describe resource query.
 
     :param str query_type: (optional) Type of the query(workspaces).
-    :param List[ResourceQueryParam] query_condition: (optional)
+    :param List[ResourceQueryParam] query_condition: (optional) List of query
+          conditions.
     :param List[str] query_select: (optional) List of query selection parameters.
     """
 
@@ -18634,7 +18249,8 @@ class ResourceQuery:
         Initialize a ResourceQuery object.
 
         :param str query_type: (optional) Type of the query(workspaces).
-        :param List[ResourceQueryParam] query_condition: (optional)
+        :param List[ResourceQueryParam] query_condition: (optional) List of query
+               conditions.
         :param List[str] query_select: (optional) List of query selection
                parameters.
         """
@@ -18700,6 +18316,7 @@ class ResourceQuery:
         """
 
         WORKSPACES = 'workspaces'
+
 
 
 class ResourceQueryParam:
@@ -18790,7 +18407,7 @@ class ResourceQueryRecord:
     :param datetime updated_at: (optional) Resource query updation time.
     :param str updated_by: (optional) Email address of user who updated the Resource
           query.
-    :param List[ResourceQuery] queries: (optional)
+    :param List[ResourceQuery] queries: (optional) List of resource queries.
     """
 
     def __init__(
@@ -18810,7 +18427,7 @@ class ResourceQueryRecord:
 
         :param str type: (optional) Resource type (cluster, vsi, icd, vpc).
         :param str name: (optional) Resource query name.
-        :param List[ResourceQuery] queries: (optional)
+        :param List[ResourceQuery] queries: (optional) List of resource queries.
         """
         self.type = type
         self.name = name
@@ -18899,6 +18516,7 @@ class ResourceQueryRecord:
         """
 
         VSI = 'vsi'
+
 
 
 class ResourceQueryRecordList:
@@ -19000,7 +18618,8 @@ class ResourceQueryResponseRecord:
     """
     Describe resource query.
 
-    :param List[ResourceQueryResponseRecordResponse] response: (optional)
+    :param List[ResourceQueryResponseRecordResponse] response: (optional) List of
+          resource query response records.
     """
 
     def __init__(
@@ -19011,7 +18630,8 @@ class ResourceQueryResponseRecord:
         """
         Initialize a ResourceQueryResponseRecord object.
 
-        :param List[ResourceQueryResponseRecordResponse] response: (optional)
+        :param List[ResourceQueryResponseRecordResponse] response: (optional) List
+               of resource query response records.
         """
         self.response = response
 
@@ -19131,9 +18751,11 @@ class ResourceQueryResponseRecordResponse:
     ResourceQueryResponseRecordResponse.
 
     :param str query_type: (optional) Type of the query(workspaces).
-    :param List[ResourceQueryParam] query_condition: (optional)
+    :param List[ResourceQueryParam] query_condition: (optional) List of query
+          conditions.
     :param List[str] query_select: (optional) List of query selection parameters.
     :param List[ResourceQueryResponseRecordQueryOutput] query_output: (optional)
+          List of query outputs.
     """
 
     def __init__(
@@ -19148,11 +18770,12 @@ class ResourceQueryResponseRecordResponse:
         Initialize a ResourceQueryResponseRecordResponse object.
 
         :param str query_type: (optional) Type of the query(workspaces).
-        :param List[ResourceQueryParam] query_condition: (optional)
+        :param List[ResourceQueryParam] query_condition: (optional) List of query
+               conditions.
         :param List[str] query_select: (optional) List of query selection
                parameters.
         :param List[ResourceQueryResponseRecordQueryOutput] query_output:
-               (optional)
+               (optional) List of query outputs.
         """
         self.query_type = query_type
         self.query_condition = query_condition
@@ -19228,158 +18851,6 @@ class ResourceQueryResponseRecordResponse:
 
         WORKSPACES = 'workspaces'
 
-
-class SchematicsLocations:
-    """
-    Information about the location.
-
-    :param str name: (optional) The name of the location.
-    :param str id: (optional) The ID of the location.
-    :param str country: (optional) The country where the location is located.
-    :param str geography: (optional) The geography that the location belongs to.
-    :param str geography_code: (optional) Geographical continent locations code
-          having the data centres of IBM Cloud Schematics service.
-    :param str metro: (optional) The metro area that the location belongs to.
-    :param str multizone_metro: (optional) The multizone metro area that the
-          location belongs to.
-    :param str kind: (optional) The kind of location.
-    :param List[str] paired_region: (optional) The list of paired regions used by
-          Schematics.
-    :param bool restricted: (optional) The restricted region.
-    :param List[AgentMetadataInfo] agent_metadata: (optional) The metadata of an
-          agent.
-    """
-
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        id: Optional[str] = None,
-        country: Optional[str] = None,
-        geography: Optional[str] = None,
-        geography_code: Optional[str] = None,
-        metro: Optional[str] = None,
-        multizone_metro: Optional[str] = None,
-        kind: Optional[str] = None,
-        paired_region: Optional[List[str]] = None,
-        restricted: Optional[bool] = None,
-        agent_metadata: Optional[List['AgentMetadataInfo']] = None,
-    ) -> None:
-        """
-        Initialize a SchematicsLocations object.
-
-        :param str name: (optional) The name of the location.
-        :param str id: (optional) The ID of the location.
-        :param str country: (optional) The country where the location is located.
-        :param str geography: (optional) The geography that the location belongs
-               to.
-        :param str geography_code: (optional) Geographical continent locations code
-               having the data centres of IBM Cloud Schematics service.
-        :param str metro: (optional) The metro area that the location belongs to.
-        :param str multizone_metro: (optional) The multizone metro area that the
-               location belongs to.
-        :param str kind: (optional) The kind of location.
-        :param List[str] paired_region: (optional) The list of paired regions used
-               by Schematics.
-        :param bool restricted: (optional) The restricted region.
-        :param List[AgentMetadataInfo] agent_metadata: (optional) The metadata of
-               an agent.
-        """
-        self.name = name
-        self.id = id
-        self.country = country
-        self.geography = geography
-        self.geography_code = geography_code
-        self.metro = metro
-        self.multizone_metro = multizone_metro
-        self.kind = kind
-        self.paired_region = paired_region
-        self.restricted = restricted
-        self.agent_metadata = agent_metadata
-
-    @classmethod
-    def from_dict(cls, _dict: Dict) -> 'SchematicsLocations':
-        """Initialize a SchematicsLocations object from a json dictionary."""
-        args = {}
-        if (name := _dict.get('name')) is not None:
-            args['name'] = name
-        if (id := _dict.get('id')) is not None:
-            args['id'] = id
-        if (country := _dict.get('country')) is not None:
-            args['country'] = country
-        if (geography := _dict.get('geography')) is not None:
-            args['geography'] = geography
-        if (geography_code := _dict.get('geography_code')) is not None:
-            args['geography_code'] = geography_code
-        if (metro := _dict.get('metro')) is not None:
-            args['metro'] = metro
-        if (multizone_metro := _dict.get('multizone_metro')) is not None:
-            args['multizone_metro'] = multizone_metro
-        if (kind := _dict.get('kind')) is not None:
-            args['kind'] = kind
-        if (paired_region := _dict.get('paired_region')) is not None:
-            args['paired_region'] = paired_region
-        if (restricted := _dict.get('restricted')) is not None:
-            args['restricted'] = restricted
-        if (agent_metadata := _dict.get('agent_metadata')) is not None:
-            args['agent_metadata'] = [AgentMetadataInfo.from_dict(v) for v in agent_metadata]
-        return cls(**args)
-
-    @classmethod
-    def _from_dict(cls, _dict):
-        """Initialize a SchematicsLocations object from a json dictionary."""
-        return cls.from_dict(_dict)
-
-    def to_dict(self) -> Dict:
-        """Return a json dictionary representing this model."""
-        _dict = {}
-        if hasattr(self, 'name') and self.name is not None:
-            _dict['name'] = self.name
-        if hasattr(self, 'id') and self.id is not None:
-            _dict['id'] = self.id
-        if hasattr(self, 'country') and self.country is not None:
-            _dict['country'] = self.country
-        if hasattr(self, 'geography') and self.geography is not None:
-            _dict['geography'] = self.geography
-        if hasattr(self, 'geography_code') and self.geography_code is not None:
-            _dict['geography_code'] = self.geography_code
-        if hasattr(self, 'metro') and self.metro is not None:
-            _dict['metro'] = self.metro
-        if hasattr(self, 'multizone_metro') and self.multizone_metro is not None:
-            _dict['multizone_metro'] = self.multizone_metro
-        if hasattr(self, 'kind') and self.kind is not None:
-            _dict['kind'] = self.kind
-        if hasattr(self, 'paired_region') and self.paired_region is not None:
-            _dict['paired_region'] = self.paired_region
-        if hasattr(self, 'restricted') and self.restricted is not None:
-            _dict['restricted'] = self.restricted
-        if hasattr(self, 'agent_metadata') and self.agent_metadata is not None:
-            agent_metadata_list = []
-            for v in self.agent_metadata:
-                if isinstance(v, dict):
-                    agent_metadata_list.append(v)
-                else:
-                    agent_metadata_list.append(v.to_dict())
-            _dict['agent_metadata'] = agent_metadata_list
-        return _dict
-
-    def _to_dict(self):
-        """Return a json dictionary representing this model."""
-        return self.to_dict()
-
-    def __str__(self) -> str:
-        """Return a `str` version of this SchematicsLocations object."""
-        return json.dumps(self.to_dict(), indent=2)
-
-    def __eq__(self, other: 'SchematicsLocations') -> bool:
-        """Return `true` when self and other are equal, false otherwise."""
-        if not isinstance(other, self.__class__):
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other: 'SchematicsLocations') -> bool:
-        """Return `true` when self and other are not equal, false otherwise."""
-        return not self == other
 
 
 class SchematicsLocationsList:
@@ -19577,15 +19048,9 @@ class SchematicsLocationsLite:
             _dict['restricted'] = self.restricted
         if hasattr(self, 'display_name') and self.display_name is not None:
             _dict['display_name'] = self.display_name
-        if (
-            hasattr(self, 'schematics_regional_public_endpoint')
-            and self.schematics_regional_public_endpoint is not None
-        ):
+        if hasattr(self, 'schematics_regional_public_endpoint') and self.schematics_regional_public_endpoint is not None:
             _dict['schematics_regional_public_endpoint'] = self.schematics_regional_public_endpoint
-        if (
-            hasattr(self, 'schematics_regional_private_endpoint')
-            and self.schematics_regional_private_endpoint is not None
-        ):
+        if hasattr(self, 'schematics_regional_private_endpoint') and self.schematics_regional_private_endpoint is not None:
             _dict['schematics_regional_private_endpoint'] = self.schematics_regional_private_endpoint
         return _dict
 
@@ -19684,12 +19149,13 @@ class ScopedResource:
         ENVIRONMENT = 'environment'
 
 
+
 class ServiceExtensions:
     """
     Service Extensions.
 
     :param str name: (optional) Name of the Service Data.
-    :param object value: (optional) Values of service data.
+    :param str value: (optional) Values of service data.
     :param str type: (optional) Type of the value string, int, bool.
     """
 
@@ -19697,14 +19163,14 @@ class ServiceExtensions:
         self,
         *,
         name: Optional[str] = None,
-        value: Optional[object] = None,
+        value: Optional[str] = None,
         type: Optional[str] = None,
     ) -> None:
         """
         Initialize a ServiceExtensions object.
 
         :param str name: (optional) Name of the Service Data.
-        :param object value: (optional) Values of service data.
+        :param str value: (optional) Values of service data.
         :param str type: (optional) Type of the value string, int, bool.
         """
         self.name = name
@@ -19764,7 +19230,7 @@ class SharedTargetData:
     catalog offerings. This information is not relevant for workspace created using your
     own Terraform template.
 
-    :param str cluster_created_on: (optional) Cluster created on.
+    :param datetime cluster_created_on: (optional) Cluster created on.
     :param str cluster_id: (optional) The ID of the cluster where you want to
           provision the resources of all IBM Cloud catalog templates that are included in
           the catalog offering.
@@ -19788,7 +19254,7 @@ class SharedTargetData:
     def __init__(
         self,
         *,
-        cluster_created_on: Optional[str] = None,
+        cluster_created_on: Optional[datetime] = None,
         cluster_id: Optional[str] = None,
         cluster_name: Optional[str] = None,
         cluster_type: Optional[str] = None,
@@ -19802,7 +19268,7 @@ class SharedTargetData:
         """
         Initialize a SharedTargetData object.
 
-        :param str cluster_created_on: (optional) Cluster created on.
+        :param datetime cluster_created_on: (optional) Cluster created on.
         :param str cluster_id: (optional) The ID of the cluster where you want to
                provision the resources of all IBM Cloud catalog templates that are
                included in the catalog offering.
@@ -19838,7 +19304,7 @@ class SharedTargetData:
         """Initialize a SharedTargetData object from a json dictionary."""
         args = {}
         if (cluster_created_on := _dict.get('cluster_created_on')) is not None:
-            args['cluster_created_on'] = cluster_created_on
+            args['cluster_created_on'] = string_to_datetime(cluster_created_on)
         if (cluster_id := _dict.get('cluster_id')) is not None:
             args['cluster_id'] = cluster_id
         if (cluster_name := _dict.get('cluster_name')) is not None:
@@ -19868,7 +19334,7 @@ class SharedTargetData:
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'cluster_created_on') and self.cluster_created_on is not None:
-            _dict['cluster_created_on'] = self.cluster_created_on
+            _dict['cluster_created_on'] = datetime_to_string(self.cluster_created_on)
         if hasattr(self, 'cluster_id') and self.cluster_id is not None:
             _dict['cluster_id'] = self.cluster_id
         if hasattr(self, 'cluster_name') and self.cluster_name is not None:
@@ -20272,23 +19738,22 @@ class TemplateMetaDataResponse:
     """
     Template metadata response.
 
-    :param str type: (optional) The template type such as **terraform**,
-          **ansible**, **helm**, **cloudpak**, or **bash script**.
+    :param str type: The template type such as **terraform**, **ansible**, **helm**,
+          **cloudpak**, or **bash script**.
     :param List[VariableData] variables: List of variables and its metadata.
     """
 
     def __init__(
         self,
+        type: str,
         variables: List['VariableData'],
-        *,
-        type: Optional[str] = None,
     ) -> None:
         """
         Initialize a TemplateMetaDataResponse object.
 
+        :param str type: The template type such as **terraform**, **ansible**,
+               **helm**, **cloudpak**, or **bash script**.
         :param List[VariableData] variables: List of variables and its metadata.
-        :param str type: (optional) The template type such as **terraform**,
-               **ansible**, **helm**, **cloudpak**, or **bash script**.
         """
         self.type = type
         self.variables = variables
@@ -20299,6 +19764,8 @@ class TemplateMetaDataResponse:
         args = {}
         if (type := _dict.get('type')) is not None:
             args['type'] = type
+        else:
+            raise ValueError('Required property \'type\' not present in TemplateMetaDataResponse JSON')
         if (variables := _dict.get('variables')) is not None:
             args['variables'] = [VariableData.from_dict(v) for v in variables]
         else:
@@ -20340,6 +19807,232 @@ class TemplateMetaDataResponse:
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'TemplateMetaDataResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class TemplateMetadataObject:
+    """
+    Information about input variables and its metadata for the workspace.
+
+    :param str name: (optional) Name of the variable.
+    :param str type: (optional) Type of the variable.
+    :param str source: (optional) Source of variable.
+    :param str default: (optional) The variable's default value.
+    :param str override_value: (optional) The variable's override value.
+    :param List[str] var_aliases: Alias names for the variable.
+    :param str var_ref: (optional) Reference to the value for the variable.
+    :param List[str] options: List of possible string values for the variable.
+    :param str matches: (optional) The Regex for the variable value.
+    :param bool secure: (optional) Is the Variable is sensitive.
+    :param bool hidden: (optional) Is the Variable is hidden.
+    :param bool immutable: (optional) Is the Variable is readonly.
+    :param str min_value: (optional) Minimum value of variable.
+    :param str max_value: (optional) Maximum value of variable.
+    :param str min_value_len: (optional) Minimum length of variable value.
+    :param str max_value_len: (optional) Maximum length of variable value.
+    :param str description: (optional) Description of the variable.
+    :param int sort_order: (optional) Display sort order for variables.
+    :param str group_by: (optional) Display group name for the variables.
+    :param bool force_new: (optional) Indicate resources will be recreated if the
+          value is changed.
+    :param str metadata_value_key: (optional) The object storage ID for values in
+          options & default_value in MetadataValue.
+    """
+
+    def __init__(
+        self,
+        var_aliases: List[str],
+        options: List[str],
+        *,
+        name: Optional[str] = None,
+        type: Optional[str] = None,
+        source: Optional[str] = None,
+        default: Optional[str] = None,
+        override_value: Optional[str] = None,
+        var_ref: Optional[str] = None,
+        matches: Optional[str] = None,
+        secure: Optional[bool] = None,
+        hidden: Optional[bool] = None,
+        immutable: Optional[bool] = None,
+        min_value: Optional[str] = None,
+        max_value: Optional[str] = None,
+        min_value_len: Optional[str] = None,
+        max_value_len: Optional[str] = None,
+        description: Optional[str] = None,
+        sort_order: Optional[int] = None,
+        group_by: Optional[str] = None,
+        force_new: Optional[bool] = None,
+        metadata_value_key: Optional[str] = None,
+    ) -> None:
+        """
+        Initialize a TemplateMetadataObject object.
+
+        :param List[str] var_aliases: Alias names for the variable.
+        :param List[str] options: List of possible string values for the variable.
+        :param str name: (optional) Name of the variable.
+        :param str type: (optional) Type of the variable.
+        :param str source: (optional) Source of variable.
+        :param str default: (optional) The variable's default value.
+        :param str override_value: (optional) The variable's override value.
+        :param str var_ref: (optional) Reference to the value for the variable.
+        :param str matches: (optional) The Regex for the variable value.
+        :param bool secure: (optional) Is the Variable is sensitive.
+        :param bool hidden: (optional) Is the Variable is hidden.
+        :param bool immutable: (optional) Is the Variable is readonly.
+        :param str min_value: (optional) Minimum value of variable.
+        :param str max_value: (optional) Maximum value of variable.
+        :param str min_value_len: (optional) Minimum length of variable value.
+        :param str max_value_len: (optional) Maximum length of variable value.
+        :param str description: (optional) Description of the variable.
+        :param int sort_order: (optional) Display sort order for variables.
+        :param str group_by: (optional) Display group name for the variables.
+        :param bool force_new: (optional) Indicate resources will be recreated if
+               the value is changed.
+        :param str metadata_value_key: (optional) The object storage ID for values
+               in options & default_value in MetadataValue.
+        """
+        self.name = name
+        self.type = type
+        self.source = source
+        self.default = default
+        self.override_value = override_value
+        self.var_aliases = var_aliases
+        self.var_ref = var_ref
+        self.options = options
+        self.matches = matches
+        self.secure = secure
+        self.hidden = hidden
+        self.immutable = immutable
+        self.min_value = min_value
+        self.max_value = max_value
+        self.min_value_len = min_value_len
+        self.max_value_len = max_value_len
+        self.description = description
+        self.sort_order = sort_order
+        self.group_by = group_by
+        self.force_new = force_new
+        self.metadata_value_key = metadata_value_key
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'TemplateMetadataObject':
+        """Initialize a TemplateMetadataObject object from a json dictionary."""
+        args = {}
+        if (name := _dict.get('name')) is not None:
+            args['name'] = name
+        if (type := _dict.get('type')) is not None:
+            args['type'] = type
+        if (source := _dict.get('source')) is not None:
+            args['source'] = source
+        if (default := _dict.get('default')) is not None:
+            args['default'] = default
+        if (override_value := _dict.get('override_value')) is not None:
+            args['override_value'] = override_value
+        if (var_aliases := _dict.get('var_aliases')) is not None:
+            args['var_aliases'] = var_aliases
+        else:
+            raise ValueError('Required property \'var_aliases\' not present in TemplateMetadataObject JSON')
+        if (var_ref := _dict.get('var_ref')) is not None:
+            args['var_ref'] = var_ref
+        if (options := _dict.get('options')) is not None:
+            args['options'] = options
+        else:
+            raise ValueError('Required property \'options\' not present in TemplateMetadataObject JSON')
+        if (matches := _dict.get('matches')) is not None:
+            args['matches'] = matches
+        if (secure := _dict.get('secure')) is not None:
+            args['secure'] = secure
+        if (hidden := _dict.get('hidden')) is not None:
+            args['hidden'] = hidden
+        if (immutable := _dict.get('immutable')) is not None:
+            args['immutable'] = immutable
+        if (min_value := _dict.get('min_value')) is not None:
+            args['min_value'] = min_value
+        if (max_value := _dict.get('max_value')) is not None:
+            args['max_value'] = max_value
+        if (min_value_len := _dict.get('min_value_len')) is not None:
+            args['min_value_len'] = min_value_len
+        if (max_value_len := _dict.get('max_value_len')) is not None:
+            args['max_value_len'] = max_value_len
+        if (description := _dict.get('description')) is not None:
+            args['description'] = description
+        if (sort_order := _dict.get('sort_order')) is not None:
+            args['sort_order'] = sort_order
+        if (group_by := _dict.get('group_by')) is not None:
+            args['group_by'] = group_by
+        if (force_new := _dict.get('force_new')) is not None:
+            args['force_new'] = force_new
+        if (metadata_value_key := _dict.get('metadata_value_key')) is not None:
+            args['metadata_value_key'] = metadata_value_key
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a TemplateMetadataObject object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'name') and self.name is not None:
+            _dict['name'] = self.name
+        if hasattr(self, 'type') and self.type is not None:
+            _dict['type'] = self.type
+        if hasattr(self, 'source') and self.source is not None:
+            _dict['source'] = self.source
+        if hasattr(self, 'default') and self.default is not None:
+            _dict['default'] = self.default
+        if hasattr(self, 'override_value') and self.override_value is not None:
+            _dict['override_value'] = self.override_value
+        if hasattr(self, 'var_aliases') and self.var_aliases is not None:
+            _dict['var_aliases'] = self.var_aliases
+        if hasattr(self, 'var_ref') and self.var_ref is not None:
+            _dict['var_ref'] = self.var_ref
+        if hasattr(self, 'options') and self.options is not None:
+            _dict['options'] = self.options
+        if hasattr(self, 'matches') and self.matches is not None:
+            _dict['matches'] = self.matches
+        if hasattr(self, 'secure') and self.secure is not None:
+            _dict['secure'] = self.secure
+        if hasattr(self, 'hidden') and self.hidden is not None:
+            _dict['hidden'] = self.hidden
+        if hasattr(self, 'immutable') and self.immutable is not None:
+            _dict['immutable'] = self.immutable
+        if hasattr(self, 'min_value') and self.min_value is not None:
+            _dict['min_value'] = self.min_value
+        if hasattr(self, 'max_value') and self.max_value is not None:
+            _dict['max_value'] = self.max_value
+        if hasattr(self, 'min_value_len') and self.min_value_len is not None:
+            _dict['min_value_len'] = self.min_value_len
+        if hasattr(self, 'max_value_len') and self.max_value_len is not None:
+            _dict['max_value_len'] = self.max_value_len
+        if hasattr(self, 'description') and self.description is not None:
+            _dict['description'] = self.description
+        if hasattr(self, 'sort_order') and self.sort_order is not None:
+            _dict['sort_order'] = self.sort_order
+        if hasattr(self, 'group_by') and self.group_by is not None:
+            _dict['group_by'] = self.group_by
+        if hasattr(self, 'force_new') and self.force_new is not None:
+            _dict['force_new'] = self.force_new
+        if hasattr(self, 'metadata_value_key') and self.metadata_value_key is not None:
+            _dict['metadata_value_key'] = self.metadata_value_key
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this TemplateMetadataObject object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'TemplateMetadataObject') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'TemplateMetadataObject') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -20799,6 +20492,231 @@ class TemplateRepoUpdateRequest:
         return not self == other
 
 
+class TemplateResourceExtension:
+    """
+    Resource extension information.
+
+    :param str resource_name: (optional) Name of the resource extension.
+    :param List[dict] resource_data_array: Array of resource data.
+    :param str resource_type: (optional) Type of the resource extension.
+    """
+
+    def __init__(
+        self,
+        resource_data_array: List[dict],
+        *,
+        resource_name: Optional[str] = None,
+        resource_type: Optional[str] = None,
+    ) -> None:
+        """
+        Initialize a TemplateResourceExtension object.
+
+        :param List[dict] resource_data_array: Array of resource data.
+        :param str resource_name: (optional) Name of the resource extension.
+        :param str resource_type: (optional) Type of the resource extension.
+        """
+        self.resource_name = resource_name
+        self.resource_data_array = resource_data_array
+        self.resource_type = resource_type
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'TemplateResourceExtension':
+        """Initialize a TemplateResourceExtension object from a json dictionary."""
+        args = {}
+        if (resource_name := _dict.get('resource_name')) is not None:
+            args['resource_name'] = resource_name
+        if (resource_data_array := _dict.get('resource_data_array')) is not None:
+            args['resource_data_array'] = resource_data_array
+        else:
+            args['resource_data_array'] = None
+        if (resource_type := _dict.get('resource_type')) is not None:
+            args['resource_type'] = resource_type
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a TemplateResourceExtension object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'resource_name') and self.resource_name is not None:
+            _dict['resource_name'] = self.resource_name
+        if hasattr(self, 'resource_data_array') and self.resource_data_array is not None:
+            _dict['resource_data_array'] = self.resource_data_array
+        if hasattr(self, 'resource_type') and self.resource_type is not None:
+            _dict['resource_type'] = self.resource_type
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this TemplateResourceExtension object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'TemplateResourceExtension') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'TemplateResourceExtension') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class TemplateResourceItem:
+    """
+    Information about a single resource provisioned by Terraform.
+
+    :param str resource_id: (optional) Unique identifier of the resource.
+    :param str resource_name: (optional) Name of the resource.
+    :param str resource_type: (optional) Type of the resource (e.g.,
+          ibm_compute_vm_instance).
+    :param str resource_crn: (optional) Cloud Resource Name (CRN) of the resource.
+    :param str resource_icon_url: (optional) URL to the resource icon.
+    :param str resource_controller_url: (optional) URL to the resource controller in
+          IBM Cloud console.
+    :param str resource_group_name: (optional) Name of the resource group.
+    :param str resource_status: (optional) Current status of the resource.
+    :param bool resource_tainted: (optional) Flag indicating if the resource is
+          tainted. The `resource_tainted` flag marks `true` when an instance times out
+          after few hours, if your resource provisioning takes longer duration. When you
+          rerun the apply plan, based on the `resource_taint` flag result the provisioning
+          continues from the state where the provisioning has stopped.
+    :param TemplateResourceExtension resource_extension: (optional) Resource
+          extension information.
+    """
+
+    def __init__(
+        self,
+        *,
+        resource_id: Optional[str] = None,
+        resource_name: Optional[str] = None,
+        resource_type: Optional[str] = None,
+        resource_crn: Optional[str] = None,
+        resource_icon_url: Optional[str] = None,
+        resource_controller_url: Optional[str] = None,
+        resource_group_name: Optional[str] = None,
+        resource_status: Optional[str] = None,
+        resource_tainted: Optional[bool] = None,
+        resource_extension: Optional['TemplateResourceExtension'] = None,
+    ) -> None:
+        """
+        Initialize a TemplateResourceItem object.
+
+        :param str resource_id: (optional) Unique identifier of the resource.
+        :param str resource_name: (optional) Name of the resource.
+        :param str resource_type: (optional) Type of the resource (e.g.,
+               ibm_compute_vm_instance).
+        :param str resource_crn: (optional) Cloud Resource Name (CRN) of the
+               resource.
+        :param str resource_icon_url: (optional) URL to the resource icon.
+        :param str resource_controller_url: (optional) URL to the resource
+               controller in IBM Cloud console.
+        :param str resource_group_name: (optional) Name of the resource group.
+        :param str resource_status: (optional) Current status of the resource.
+        :param bool resource_tainted: (optional) Flag indicating if the resource is
+               tainted. The `resource_tainted` flag marks `true` when an instance times
+               out after few hours, if your resource provisioning takes longer duration.
+               When you rerun the apply plan, based on the `resource_taint` flag result
+               the provisioning continues from the state where the provisioning has
+               stopped.
+        :param TemplateResourceExtension resource_extension: (optional) Resource
+               extension information.
+        """
+        self.resource_id = resource_id
+        self.resource_name = resource_name
+        self.resource_type = resource_type
+        self.resource_crn = resource_crn
+        self.resource_icon_url = resource_icon_url
+        self.resource_controller_url = resource_controller_url
+        self.resource_group_name = resource_group_name
+        self.resource_status = resource_status
+        self.resource_tainted = resource_tainted
+        self.resource_extension = resource_extension
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'TemplateResourceItem':
+        """Initialize a TemplateResourceItem object from a json dictionary."""
+        args = {}
+        if (resource_id := _dict.get('resource_id')) is not None:
+            args['resource_id'] = resource_id
+        if (resource_name := _dict.get('resource_name')) is not None:
+            args['resource_name'] = resource_name
+        if (resource_type := _dict.get('resource_type')) is not None:
+            args['resource_type'] = resource_type
+        if (resource_crn := _dict.get('resource_crn')) is not None:
+            args['resource_crn'] = resource_crn
+        if (resource_icon_url := _dict.get('resource_icon_url')) is not None:
+            args['resource_icon_url'] = resource_icon_url
+        if (resource_controller_url := _dict.get('resource_controller_url')) is not None:
+            args['resource_controller_url'] = resource_controller_url
+        if (resource_group_name := _dict.get('resource_group_name')) is not None:
+            args['resource_group_name'] = resource_group_name
+        if (resource_status := _dict.get('resource_status')) is not None:
+            args['resource_status'] = resource_status
+        if (resource_tainted := _dict.get('resource_tainted')) is not None:
+            args['resource_tainted'] = resource_tainted
+        if (resource_extension := _dict.get('resource_extension')) is not None:
+            args['resource_extension'] = TemplateResourceExtension.from_dict(resource_extension)
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a TemplateResourceItem object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'resource_id') and self.resource_id is not None:
+            _dict['resource_id'] = self.resource_id
+        if hasattr(self, 'resource_name') and self.resource_name is not None:
+            _dict['resource_name'] = self.resource_name
+        if hasattr(self, 'resource_type') and self.resource_type is not None:
+            _dict['resource_type'] = self.resource_type
+        if hasattr(self, 'resource_crn') and self.resource_crn is not None:
+            _dict['resource_crn'] = self.resource_crn
+        if hasattr(self, 'resource_icon_url') and self.resource_icon_url is not None:
+            _dict['resource_icon_url'] = self.resource_icon_url
+        if hasattr(self, 'resource_controller_url') and self.resource_controller_url is not None:
+            _dict['resource_controller_url'] = self.resource_controller_url
+        if hasattr(self, 'resource_group_name') and self.resource_group_name is not None:
+            _dict['resource_group_name'] = self.resource_group_name
+        if hasattr(self, 'resource_status') and self.resource_status is not None:
+            _dict['resource_status'] = self.resource_status
+        if hasattr(self, 'resource_tainted') and self.resource_tainted is not None:
+            _dict['resource_tainted'] = self.resource_tainted
+        if hasattr(self, 'resource_extension') and self.resource_extension is not None:
+            if isinstance(self.resource_extension, dict):
+                _dict['resource_extension'] = self.resource_extension
+            else:
+                _dict['resource_extension'] = self.resource_extension.to_dict()
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this TemplateResourceItem object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'TemplateResourceItem') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'TemplateResourceItem') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
 class TemplateResources:
     """
     Information about the resources provisioned by the Terraform template.
@@ -20931,6 +20849,141 @@ class TemplateResources:
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'TemplateResources') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class TemplateResourcesObject:
+    """
+    Information about the resources provisioned by the workspace template.
+
+    :param str id: (optional) The ID that was assigned to your Terraform template or
+          IBM Cloud catalog software template.
+    :param str folder: (optional) The subfolder in GitHub or GitLab where your
+          Terraform templates are stored. If your template is stored in the root
+          directory, `.` is returned.
+    :param str type: (optional) The Terraform version that was used to apply your
+          template.
+    :param str generated_at: (optional) Timestamp when the terraform resource
+          information was last generated.
+    :param List[TemplateResourceItem] resources: Information about the IBM Cloud
+          resources that are associated with your workspace.
+    :param List[TemplateResourceItem] null_resources: List of null resources.
+    :param int resources_count: (optional) Total count of resources provisioned.
+    """
+
+    def __init__(
+        self,
+        resources: List['TemplateResourceItem'],
+        null_resources: List['TemplateResourceItem'],
+        *,
+        id: Optional[str] = None,
+        folder: Optional[str] = None,
+        type: Optional[str] = None,
+        generated_at: Optional[str] = None,
+        resources_count: Optional[int] = None,
+    ) -> None:
+        """
+        Initialize a TemplateResourcesObject object.
+
+        :param List[TemplateResourceItem] resources: Information about the IBM
+               Cloud resources that are associated with your workspace.
+        :param List[TemplateResourceItem] null_resources: List of null resources.
+        :param str id: (optional) The ID that was assigned to your Terraform
+               template or IBM Cloud catalog software template.
+        :param str folder: (optional) The subfolder in GitHub or GitLab where your
+               Terraform templates are stored. If your template is stored in the root
+               directory, `.` is returned.
+        :param str type: (optional) The Terraform version that was used to apply
+               your template.
+        :param str generated_at: (optional) Timestamp when the terraform resource
+               information was last generated.
+        :param int resources_count: (optional) Total count of resources
+               provisioned.
+        """
+        self.id = id
+        self.folder = folder
+        self.type = type
+        self.generated_at = generated_at
+        self.resources = resources
+        self.null_resources = null_resources
+        self.resources_count = resources_count
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'TemplateResourcesObject':
+        """Initialize a TemplateResourcesObject object from a json dictionary."""
+        args = {}
+        if (id := _dict.get('id')) is not None:
+            args['id'] = id
+        if (folder := _dict.get('folder')) is not None:
+            args['folder'] = folder
+        if (type := _dict.get('type')) is not None:
+            args['type'] = type
+        if (generated_at := _dict.get('generated_at')) is not None:
+            args['generated_at'] = generated_at
+        if (resources := _dict.get('resources')) is not None:
+            args['resources'] = [TemplateResourceItem.from_dict(v) for v in resources]
+        else:
+            raise ValueError('Required property \'resources\' not present in TemplateResourcesObject JSON')
+        if (null_resources := _dict.get('null_resources')) is not None:
+            args['null_resources'] = [TemplateResourceItem.from_dict(v) for v in null_resources]
+        else:
+            raise ValueError('Required property \'null_resources\' not present in TemplateResourcesObject JSON')
+        if (resources_count := _dict.get('resources_count')) is not None:
+            args['resources_count'] = resources_count
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a TemplateResourcesObject object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'id') and self.id is not None:
+            _dict['id'] = self.id
+        if hasattr(self, 'folder') and self.folder is not None:
+            _dict['folder'] = self.folder
+        if hasattr(self, 'type') and self.type is not None:
+            _dict['type'] = self.type
+        if hasattr(self, 'generated_at') and self.generated_at is not None:
+            _dict['generated_at'] = self.generated_at
+        if hasattr(self, 'resources') and self.resources is not None:
+            resources_list = []
+            for v in self.resources:
+                if isinstance(v, dict):
+                    resources_list.append(v)
+                else:
+                    resources_list.append(v.to_dict())
+            _dict['resources'] = resources_list
+        if hasattr(self, 'null_resources') and self.null_resources is not None:
+            null_resources_list = []
+            for v in self.null_resources:
+                if isinstance(v, dict):
+                    null_resources_list.append(v)
+                else:
+                    null_resources_list.append(v.to_dict())
+            _dict['null_resources'] = null_resources_list
+        if hasattr(self, 'resources_count') and self.resources_count is not None:
+            _dict['resources_count'] = self.resources_count
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this TemplateResourcesObject object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'TemplateResourcesObject') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'TemplateResourcesObject') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -21468,11 +21521,12 @@ class TemplateStateStore:
     """
     The content of the Terraform statefile (`terraform.tfstate`).
 
-    :param float version: (optional)
-    :param str terraform_version: (optional)
-    :param float serial: (optional)
-    :param str lineage: (optional)
-    :param List[dict] modules: (optional)
+    :param float version: (optional) The version of the state file format.
+    :param str terraform_version: (optional) The Terraform version that was used to
+          apply your template.
+    :param float serial: (optional) serial number.
+    :param str lineage: (optional) lineage.
+    :param List[dict] modules: (optional) modules.
     """
 
     def __init__(
@@ -21487,11 +21541,12 @@ class TemplateStateStore:
         """
         Initialize a TemplateStateStore object.
 
-        :param float version: (optional)
-        :param str terraform_version: (optional)
-        :param float serial: (optional)
-        :param str lineage: (optional)
-        :param List[dict] modules: (optional)
+        :param float version: (optional) The version of the state file format.
+        :param str terraform_version: (optional) The Terraform version that was
+               used to apply your template.
+        :param float serial: (optional) serial number.
+        :param str lineage: (optional) lineage.
+        :param List[dict] modules: (optional) modules.
         """
         self.version = version
         self.terraform_version = terraform_version
@@ -21611,6 +21666,73 @@ class TemplateValues:
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'TemplateValues') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class TemplateValuesMetaData:
+    """
+    Information about the values meta data that are declared in the template that your
+    workspace points to.
+
+    :param List[TemplateMetadataObject] values_metadata: List of variable metadata.
+    """
+
+    def __init__(
+        self,
+        values_metadata: List['TemplateMetadataObject'],
+    ) -> None:
+        """
+        Initialize a TemplateValuesMetaData object.
+
+        :param List[TemplateMetadataObject] values_metadata: List of variable
+               metadata.
+        """
+        self.values_metadata = values_metadata
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'TemplateValuesMetaData':
+        """Initialize a TemplateValuesMetaData object from a json dictionary."""
+        args = {}
+        if (values_metadata := _dict.get('values_metadata')) is not None:
+            args['values_metadata'] = [TemplateMetadataObject.from_dict(v) for v in values_metadata]
+        else:
+            raise ValueError('Required property \'values_metadata\' not present in TemplateValuesMetaData JSON')
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a TemplateValuesMetaData object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'values_metadata') and self.values_metadata is not None:
+            values_metadata_list = []
+            for v in self.values_metadata:
+                if isinstance(v, dict):
+                    values_metadata_list.append(v)
+                else:
+                    values_metadata_list.append(v.to_dict())
+            _dict['values_metadata'] = values_metadata_list
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this TemplateValuesMetaData object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'TemplateValuesMetaData') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'TemplateValuesMetaData') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other
 
@@ -21740,6 +21862,72 @@ class TerraformCommand:
         return not self == other
 
 
+class TftParametersObject:
+    """
+    List of terraform template parameters.
+
+    :param str name: (optional) Key name to replace.
+    :param str value: (optional) Value to replace.
+    """
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        value: Optional[str] = None,
+    ) -> None:
+        """
+        Initialize a TftParametersObject object.
+
+        :param str name: (optional) Key name to replace.
+        :param str value: (optional) Value to replace.
+        """
+        self.name = name
+        self.value = value
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'TftParametersObject':
+        """Initialize a TftParametersObject object from a json dictionary."""
+        args = {}
+        if (name := _dict.get('name')) is not None:
+            args['name'] = name
+        if (value := _dict.get('value')) is not None:
+            args['value'] = value
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a TftParametersObject object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'name') and self.name is not None:
+            _dict['name'] = self.name
+        if hasattr(self, 'value') and self.value is not None:
+            _dict['value'] = self.value
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this TftParametersObject object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'TftParametersObject') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'TftParametersObject') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
 class UserState:
     """
     User defined status of the Schematics object.
@@ -21842,6 +22030,7 @@ class UserState:
         LIVE = 'live'
         LOCKED = 'locked'
         DISABLE = 'disable'
+
 
 
 class UserValues:
@@ -22312,6 +22501,7 @@ class VariableMetadata:
         COMPLEX = 'complex'
         LINK = 'link'
 
+
     class LinkStatusEnum(str, Enum):
         """
         The status of the link.
@@ -22321,12 +22511,13 @@ class VariableMetadata:
         BROKEN = 'broken'
 
 
+
 class VersionResponse:
     """
     Successful response when you retrieve detailed information about the IBM Cloud
     Schematics API.
 
-    :param str builddate: (optional) The date when the API version was built.
+    :param datetime builddate: (optional) The date when the API version was built.
     :param str buildno: (optional) The build number that the API is based on.
     :param str commitsha: (optional) The SHA value for the Git commit that
           represents the latest version of the API.
@@ -22345,7 +22536,7 @@ class VersionResponse:
     def __init__(
         self,
         *,
-        builddate: Optional[str] = None,
+        builddate: Optional[datetime] = None,
         buildno: Optional[str] = None,
         commitsha: Optional[str] = None,
         helm_provider_version: Optional[str] = None,
@@ -22357,7 +22548,8 @@ class VersionResponse:
         """
         Initialize a VersionResponse object.
 
-        :param str builddate: (optional) The date when the API version was built.
+        :param datetime builddate: (optional) The date when the API version was
+               built.
         :param str buildno: (optional) The build number that the API is based on.
         :param str commitsha: (optional) The SHA value for the Git commit that
                represents the latest version of the API.
@@ -22386,7 +22578,7 @@ class VersionResponse:
         """Initialize a VersionResponse object from a json dictionary."""
         args = {}
         if (builddate := _dict.get('builddate')) is not None:
-            args['builddate'] = builddate
+            args['builddate'] = string_to_datetime(builddate)
         if (buildno := _dict.get('buildno')) is not None:
             args['buildno'] = buildno
         if (commitsha := _dict.get('commitsha')) is not None:
@@ -22412,7 +22604,7 @@ class VersionResponse:
         """Return a json dictionary representing this model."""
         _dict = {}
         if hasattr(self, 'builddate') and self.builddate is not None:
-            _dict['builddate'] = self.builddate
+            _dict['builddate'] = datetime_to_string(self.builddate)
         if hasattr(self, 'buildno') and self.buildno is not None:
             _dict['buildno'] = self.buildno
         if hasattr(self, 'commitsha') and self.commitsha is not None:
@@ -24894,5 +25086,63 @@ class WorkspaceVariableResponse:
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other: 'WorkspaceVariableResponse') -> bool:
+        """Return `true` when self and other are not equal, false otherwise."""
+        return not self == other
+
+
+class DeleteAgentResources202Response:
+    """
+    DeleteAgentResources202Response.
+
+    :param str message: (optional)
+    """
+
+    def __init__(
+        self,
+        *,
+        message: Optional[str] = None,
+    ) -> None:
+        """
+        Initialize a DeleteAgentResources202Response object.
+
+        :param str message: (optional)
+        """
+        self.message = message
+
+    @classmethod
+    def from_dict(cls, _dict: Dict) -> 'DeleteAgentResources202Response':
+        """Initialize a DeleteAgentResources202Response object from a json dictionary."""
+        args = {}
+        if (message := _dict.get('message')) is not None:
+            args['message'] = message
+        return cls(**args)
+
+    @classmethod
+    def _from_dict(cls, _dict):
+        """Initialize a DeleteAgentResources202Response object from a json dictionary."""
+        return cls.from_dict(_dict)
+
+    def to_dict(self) -> Dict:
+        """Return a json dictionary representing this model."""
+        _dict = {}
+        if hasattr(self, 'message') and self.message is not None:
+            _dict['message'] = self.message
+        return _dict
+
+    def _to_dict(self):
+        """Return a json dictionary representing this model."""
+        return self.to_dict()
+
+    def __str__(self) -> str:
+        """Return a `str` version of this DeleteAgentResources202Response object."""
+        return json.dumps(self.to_dict(), indent=2)
+
+    def __eq__(self, other: 'DeleteAgentResources202Response') -> bool:
+        """Return `true` when self and other are equal, false otherwise."""
+        if not isinstance(other, self.__class__):
+            return False
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other: 'DeleteAgentResources202Response') -> bool:
         """Return `true` when self and other are not equal, false otherwise."""
         return not self == other

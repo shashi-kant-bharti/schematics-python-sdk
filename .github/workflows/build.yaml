@@ -1,0 +1,101 @@
+# This workflow will build and unit test the project.
+# If the workflow is running on the "main" branch, then
+# semantic-release is also run to create a new release (if
+# warranted by the new commits being built).
+
+name: build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+    # Allow workflow to be triggered manually.
+
+jobs:
+  detect-secrets:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    name: detect-secrets
+    runs-on: ibm-x86-64-small
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
+
+      - name: Install detect-secrets
+        run: |
+          pip install --upgrade "git+https://github.com/ibm/detect-secrets.git@master#egg=detect-secrets"
+
+      - name: Run detect-secrets
+        run: |
+          detect-secrets scan --update .secrets.baseline
+          detect-secrets -v audit --report --fail-on-unaudited --fail-on-live --fail-on-audited-real .secrets.baseline
+
+  build:
+    name: Build and test project (python ${{ matrix.python-version }})
+    runs-on: ibm-x86-64-small
+    needs: detect-secrets
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build & Test
+        run: make ci
+
+  systest:
+    name: Run system test with template
+    runs-on: ibm-x86-64-medium
+    if: github.event_name != 'pull_request'
+    needs: build
+    strategy:
+      matrix:
+        test-gen-arg: ["tests", "apidocs"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Build & Test
+        run: |
+          echo -e "machine github.ibm.com\n  login $GH_TOKEN" > ~/.netrc
+          git clone https://github.ibm.com/CloudEngineering/sdkgen-systest.git
+          cd sdkgen-systest
+          sudo apt update
+          ./install_scripts/install_deps_ubuntu.sh
+          ./setup_and_generate.sh -l ibm-python -t ${{ github.ref_name }} -s -i ${{ matrix.test-gen-arg }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  results:
+    if: ${{ always() }}
+    runs-on: ibm-x86-64-small
+    name: Final Test Results
+    needs: systest
+    steps:
+      - run: |
+          result="${{ needs.systest.result }}"
+          if [[ $result == "success" || $result == "skipped" ]]; then
+            exit 0
+          else
+            exit 1
+          fi
