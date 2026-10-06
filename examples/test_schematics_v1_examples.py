@@ -60,8 +60,7 @@ class TestSchematicsV1Examples:
 
             # begin-common
 
-            schematics_service = SchematicsV1.new_instance(
-            )
+            schematics_service = SchematicsV1.new_instance()
 
             # end-common
             assert schematics_service is not None
@@ -1195,7 +1194,14 @@ class TestSchematicsV1Examples:
             response = schematics_service.create_workspace_deletion_job(
                 refresh_token='testString',
                 job='delete',
-                workspaces=['us-south.workspace.testWorkspace.a6010c37', 'us-south.workspace.teraformNewupdatedone.72011986', 'us-south.workspace.readterraform.400b427c', 'us-south.workspace.myworkspacesink.49745827', 'us-south.workspace.ReadTerraformTemp.c98c9774', 'us-south.workspace.SampleTest1.2a51c3a1'],
+                workspaces=[
+                    'us-south.workspace.testWorkspace.a6010c37',
+                    'us-south.workspace.teraformNewupdatedone.72011986',
+                    'us-south.workspace.readterraform.400b427c',
+                    'us-south.workspace.myworkspacesink.49745827',
+                    'us-south.workspace.ReadTerraformTemp.c98c9774',
+                    'us-south.workspace.SampleTest1.2a51c3a1',
+                ],
             )
             workspace_bulk_delete_response = response.get_result()
 
@@ -1306,8 +1312,7 @@ class TestSchematicsV1Examples:
 
             # begin-replace_inventory
 
-            credential_variable_metadata_model = {
-            }
+            credential_variable_metadata_model = {}
 
             credential_variable_data_model = {
                 'metadata': credential_variable_metadata_model,

@@ -63,9 +63,7 @@ class SchematicsV1(BaseService):
                parameters and external configuration.
         """
         authenticator = get_authenticator_from_environment(service_name)
-        service = cls(
-            authenticator
-            )
+        service = cls(authenticator)
         service.configure_service(service_name)
         return service
 
@@ -6433,6 +6431,7 @@ class ListJobsEnums:
 
         IDS = 'ids'
         SUMMARY = 'summary'
+
     class Resource(str, Enum):
         """
         Name of the resource (workspaces, actions, environment or controls).
@@ -6442,6 +6441,7 @@ class ListJobsEnums:
         ACTION = 'action'
         ACTIONS = 'actions'
         ENVIRONMENT = 'environment'
+
     class List(str, Enum):
         """
         list jobs.
@@ -6538,6 +6538,7 @@ class ListAgentDataEnums:
         SUMMARY = 'summary'
         DETAILED = 'detailed'
         IDS = 'ids'
+
     class Filter(str, Enum):
         """
         Use `new` to get all unregistered agents; use `saved` to get all registered
@@ -7039,7 +7040,6 @@ class Action:
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
 
-
     class BastionConnectionTypeEnum(str, Enum):
         """
         Type of connection to be used when connecting to bastion host.  If the
@@ -7048,7 +7048,6 @@ class Action:
         """
 
         SSH = 'ssh'
-
 
     class InventoryConnectionTypeEnum(str, Enum):
         """
@@ -7059,7 +7058,6 @@ class Action:
 
         SSH = 'ssh'
         WINRM = 'winrm'
-
 
     class SourceTypeEnum(str, Enum):
         """
@@ -7072,7 +7070,6 @@ class Action:
         GIT_LAB = 'git_lab'
         IBM_GIT_LAB = 'ibm_git_lab'
         IBM_CLOUD_CATALOG = 'ibm_cloud_catalog'
-
 
 
 class ActionList:
@@ -7388,7 +7385,6 @@ class ActionLite:
         EU_DE = 'eu-de'
 
 
-
 class ActionLiteState:
     """
     Computed state of the Action.
@@ -7466,7 +7462,6 @@ class ActionLiteState:
         PENDING = 'pending'
         DISABLED = 'disabled'
         CRITICAL = 'critical'
-
 
 
 class AgentAssignmentPolicyParameter:
@@ -7561,7 +7556,6 @@ class AgentAssignmentPolicyParameter:
 
         IDS = 'ids'
         SCOPED = 'scoped'
-
 
 
 class AgentData:
@@ -7883,7 +7877,6 @@ class AgentData:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
-
 
 
 class AgentDataList:
@@ -8214,7 +8207,6 @@ class AgentDataLite:
         EU_DE = 'eu-de'
 
 
-
 class AgentDataRecentDeployJob:
     """
     Post-installations checks for Agent health.
@@ -8353,7 +8345,6 @@ class AgentDataRecentDeployJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
-
 class AgentDataRecentDestroyJob:
     """
     destroy resource provisoned by agent deploy method.
@@ -8484,7 +8475,6 @@ class AgentDataRecentDestroyJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
-
 class AgentDataRecentHealthJob:
     """
     Agent health check.
@@ -8611,7 +8601,6 @@ class AgentDataRecentHealthJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
-
 
 
 class AgentDataRecentPrsJob:
@@ -8741,7 +8730,6 @@ class AgentDataRecentPrsJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
-
 
 
 class AgentDeployJob:
@@ -8882,7 +8870,6 @@ class AgentDeployJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
-
 class AgentHealthJob:
     """
     Agent health check.
@@ -9009,7 +8996,6 @@ class AgentHealthJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
-
 
 
 class AgentInfo:
@@ -9206,7 +9192,6 @@ class AgentInfrastructure:
         IBM_SATELLITE = 'ibm_satellite'
 
 
-
 class AgentKPIData:
     """
     Schematics Agent key performance indicators.
@@ -9315,7 +9300,6 @@ class AgentKPIData:
         UNAVAILABLE = 'unavailable'
         ERROR = 'error'
 
-
     class LifecycleIndicatorEnum(str, Enum):
         """
         Overall lifecycle indicator reported by the agents.
@@ -9324,7 +9308,6 @@ class AgentKPIData:
         CONSISTENT = 'consistent'
         INCONSISTENT = 'inconsistent'
         OBSELETE = 'obselete'
-
 
 
 class AgentKPIDataLite:
@@ -9415,7 +9398,6 @@ class AgentKPIDataLite:
         UNAVAILABLE = 'unavailable'
         ERROR = 'error'
 
-
     class LifecycleIndicatorEnum(str, Enum):
         """
         Overall lifecycle indicator reported by the agents.
@@ -9424,7 +9406,6 @@ class AgentKPIDataLite:
         CONSISTENT = 'consistent'
         INCONSISTENT = 'inconsistent'
         OBSELETE = 'obselete'
-
 
 
 class AgentMetadataInfo:
@@ -9622,7 +9603,6 @@ class AgentPRSJob:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
-
 class AgentSystemStatus:
     """
     Computed state of the agent.
@@ -9698,7 +9678,6 @@ class AgentSystemStatus:
         IN_PROGRESS = 'in_progress'
         PENDING = 'pending'
         DRAFT = 'draft'
-
 
 
 class AgentUserState:
@@ -9786,7 +9765,6 @@ class AgentUserState:
 
         ENABLE = 'enable'
         DISABLE = 'disable'
-
 
 
 class AgentVersionInfo:
@@ -10076,7 +10054,6 @@ class CartOrderData:
         """
 
         SERVICETAGS = 'servicetags'
-
 
 
 class CatalogRef:
@@ -10427,7 +10404,10 @@ class CatalogSource:
             _dict['offering_version_flavour_name'] = self.offering_version_flavour_name
         if hasattr(self, 'offering_repo_url') and self.offering_repo_url is not None:
             _dict['offering_repo_url'] = self.offering_repo_url
-        if hasattr(self, 'offering_provisioner_working_directory') and self.offering_provisioner_working_directory is not None:
+        if (
+            hasattr(self, 'offering_provisioner_working_directory')
+            and self.offering_provisioner_working_directory is not None
+        ):
             _dict['offering_provisioner_working_directory'] = self.offering_provisioner_working_directory
         if hasattr(self, 'dry_run') and self.dry_run is not None:
             _dict['dry_run'] = self.dry_run
@@ -10810,7 +10790,6 @@ class CredentialVariableMetadata:
         STRING = 'string'
         LINK = 'link'
 
-
     class LinkStatusEnum(str, Enum):
         """
         The status of the link.
@@ -10818,7 +10797,6 @@ class CredentialVariableMetadata:
 
         NORMAL = 'normal'
         BROKEN = 'broken'
-
 
 
 class Dependencies:
@@ -11291,7 +11269,6 @@ class ExternalSource:
         GIT_LAB = 'git_lab'
         IBM_GIT_LAB = 'ibm_git_lab'
         IBM_CLOUD_CATALOG = 'ibm_cloud_catalog'
-
 
 
 class GitSource:
@@ -11972,7 +11949,6 @@ class InventoryResourceRecord:
         EU_DE = 'eu-de'
 
 
-
 class InventoryResourceRecordList:
     """
     List of Inventory definition records.
@@ -12469,7 +12445,6 @@ class Job:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
-
     class CommandNameEnum(str, Enum):
         """
         Schematics job command name.
@@ -12498,7 +12473,6 @@ class Job:
         REPOSITORY_PROCESS = 'repository_process'
         TERRAFORM_COMMANDS = 'terraform_commands'
 
-
     class LocationEnum(str, Enum):
         """
         List of locations supported by IBM Cloud Schematics service.  While creating your
@@ -12511,7 +12485,6 @@ class Job:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
-
 
 
 class JobData:
@@ -12627,7 +12600,6 @@ class JobData:
         ACTION_JOB = 'action_job'
         SYSTEM_JOB = 'system_job'
         FLOW_JOB = 'flow-job'
-
 
 
 class JobDataAction:
@@ -13236,7 +13208,6 @@ class JobDataWorkItem:
         IBM_CLOUD_CATALOG = 'ibm_cloud_catalog'
 
 
-
 class JobDataWorkItemLastJob:
     """
     Status of the last job executed by the workitem.
@@ -13350,7 +13321,6 @@ class JobDataWorkItemLastJob:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
-
     class CommandNameEnum(str, Enum):
         """
         Schematics job command name.
@@ -13379,7 +13349,6 @@ class JobDataWorkItemLastJob:
         REPOSITORY_PROCESS = 'repository_process'
         TERRAFORM_COMMANDS = 'terraform_commands'
 
-
     class JobStatusEnum(str, Enum):
         """
         Status of Jobs.
@@ -13393,7 +13362,6 @@ class JobDataWorkItemLastJob:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
-
 
 
 class JobDataWorkspace:
@@ -13748,7 +13716,6 @@ class JobFileData:
         LOG_INSIGHTS_FILE = 'log_insights_file'
 
 
-
 class JobFileDataSummary:
     """
     JobFileDataSummary.
@@ -13829,7 +13796,6 @@ class JobFileDataSummary:
 
         NUMBER = 'number'
         STRING = 'string'
-
 
 
 class JobList:
@@ -14163,7 +14129,6 @@ class JobLite:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
-
     class CommandNameEnum(str, Enum):
         """
         Schematics job command name.
@@ -14192,7 +14157,6 @@ class JobLite:
         REPOSITORY_PROCESS = 'repository_process'
         TERRAFORM_COMMANDS = 'terraform_commands'
 
-
     class LocationEnum(str, Enum):
         """
         List of locations supported by IBM Cloud Schematics service.  While creating your
@@ -14205,7 +14169,6 @@ class JobLite:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
-
 
 
 class JobLog:
@@ -14319,7 +14282,6 @@ class JobLog:
         HTML = 'html'
         MARKDOWN = 'markdown'
         RTF = 'rtf'
-
 
 
 class JobLogSummary:
@@ -14491,7 +14453,6 @@ class JobLogSummary:
         ACTION_JOB = 'action_job'
         SYSTEM_JOB = 'system_job'
         FLOW_JOB = 'flow_job'
-
 
 
 class JobLogSummaryWorkitems:
@@ -15407,7 +15368,6 @@ class JobStatusAction:
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
-
     class BastionStatusCodeEnum(str, Enum):
         """
         Status of Resources.
@@ -15418,7 +15378,6 @@ class JobStatusAction:
         PROCESSING = 'processing'
         ERROR = 'error'
 
-
     class TargetsStatusCodeEnum(str, Enum):
         """
         Status of Resources.
@@ -15428,7 +15387,6 @@ class JobStatusAction:
         READY = 'ready'
         PROCESSING = 'processing'
         ERROR = 'error'
-
 
 
 class JobStatusFlow:
@@ -15553,7 +15511,6 @@ class JobStatusFlow:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
-
 class JobStatusSchematicsResources:
     """
     schematics Resources Job Status.
@@ -15652,7 +15609,6 @@ class JobStatusSchematicsResources:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
-
 class JobStatusSystem:
     """
     System Job Status.
@@ -15695,7 +15651,9 @@ class JobStatusSystem:
         if (system_status_code := _dict.get('system_status_code')) is not None:
             args['system_status_code'] = system_status_code
         if (schematics_resource_status := _dict.get('schematics_resource_status')) is not None:
-            args['schematics_resource_status'] = [JobStatusSchematicsResources.from_dict(v) for v in schematics_resource_status]
+            args['schematics_resource_status'] = [
+                JobStatusSchematicsResources.from_dict(v) for v in schematics_resource_status
+            ]
         if (updated_at := _dict.get('updated_at')) is not None:
             args['updated_at'] = string_to_datetime(updated_at)
         return cls(**args)
@@ -15755,7 +15713,6 @@ class JobStatusSystem:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
-
 
 
 class JobStatusTemplate:
@@ -15872,7 +15829,6 @@ class JobStatusTemplate:
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
 
 
-
 class JobStatusWorkitem:
     """
     Individual workitem status info.
@@ -15984,7 +15940,6 @@ class JobStatusWorkitem:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
-
 
 
 class JobStatusWorkspace:
@@ -16124,7 +16079,6 @@ class JobStatusWorkspace:
         JOB_STOPPED = 'job_stopped'
         JOB_STOP_IN_PROGRESS = 'job_stop_in_progress'
         JOB_READY_TO_EXECUTE = 'job_ready_to_execute'
-
 
 
 class KMSDiscovery:
@@ -17567,7 +17521,6 @@ class Policy:
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
 
-
     class KindEnum(str, Enum):
         """
         Policy kind or categories for managing and deriving policy decision
@@ -17575,7 +17528,6 @@ class Policy:
         """
 
         AGENT_ASSIGNMENT_POLICY = 'agent_assignment_policy'
-
 
 
 class PolicyList:
@@ -17844,7 +17796,6 @@ class PolicyLite:
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
 
-
     class PolicyKindEnum(str, Enum):
         """
         Policy kind or categories for managing and deriving policy decision
@@ -17852,7 +17803,6 @@ class PolicyLite:
         """
 
         AGENT_ASSIGNMENT_POLICY = 'agent_assignment_policy'
-
 
 
 class PolicyObjectSelector:
@@ -17949,7 +17899,6 @@ class PolicyObjectSelector:
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
 
-
     class LocationsEnum(str, Enum):
         """
         List of locations supported by IBM Cloud Schematics service.  While creating your
@@ -17962,7 +17911,6 @@ class PolicyObjectSelector:
         US_EAST = 'us-east'
         EU_GB = 'eu-gb'
         EU_DE = 'eu-de'
-
 
 
 class PolicyObjects:
@@ -18059,7 +18007,6 @@ class PolicyObjects:
         SCOPED = 'scoped'
 
 
-
 class PolicyParameter:
     """
     The parameter to tune the Schematics policy.
@@ -18086,7 +18033,9 @@ class PolicyParameter:
         """Initialize a PolicyParameter object from a json dictionary."""
         args = {}
         if (agent_assignment_policy_parameter := _dict.get('agent_assignment_policy_parameter')) is not None:
-            args['agent_assignment_policy_parameter'] = AgentAssignmentPolicyParameter.from_dict(agent_assignment_policy_parameter)
+            args['agent_assignment_policy_parameter'] = AgentAssignmentPolicyParameter.from_dict(
+                agent_assignment_policy_parameter
+            )
         return cls(**args)
 
     @classmethod
@@ -18318,7 +18267,6 @@ class ResourceQuery:
         WORKSPACES = 'workspaces'
 
 
-
 class ResourceQueryParam:
     """
     Describe resource query param.
@@ -18516,7 +18464,6 @@ class ResourceQueryRecord:
         """
 
         VSI = 'vsi'
-
 
 
 class ResourceQueryRecordList:
@@ -18852,7 +18799,6 @@ class ResourceQueryResponseRecordResponse:
         WORKSPACES = 'workspaces'
 
 
-
 class SchematicsLocationsList:
     """
     The list of locations details.
@@ -19048,9 +18994,15 @@ class SchematicsLocationsLite:
             _dict['restricted'] = self.restricted
         if hasattr(self, 'display_name') and self.display_name is not None:
             _dict['display_name'] = self.display_name
-        if hasattr(self, 'schematics_regional_public_endpoint') and self.schematics_regional_public_endpoint is not None:
+        if (
+            hasattr(self, 'schematics_regional_public_endpoint')
+            and self.schematics_regional_public_endpoint is not None
+        ):
             _dict['schematics_regional_public_endpoint'] = self.schematics_regional_public_endpoint
-        if hasattr(self, 'schematics_regional_private_endpoint') and self.schematics_regional_private_endpoint is not None:
+        if (
+            hasattr(self, 'schematics_regional_private_endpoint')
+            and self.schematics_regional_private_endpoint is not None
+        ):
             _dict['schematics_regional_private_endpoint'] = self.schematics_regional_private_endpoint
         return _dict
 
@@ -19147,7 +19099,6 @@ class ScopedResource:
         ACTION = 'action'
         SYSTEM = 'system'
         ENVIRONMENT = 'environment'
-
 
 
 class ServiceExtensions:
@@ -22032,7 +21983,6 @@ class UserState:
         DISABLE = 'disable'
 
 
-
 class UserValues:
     """
     UserValues -.
@@ -22501,7 +22451,6 @@ class VariableMetadata:
         COMPLEX = 'complex'
         LINK = 'link'
 
-
     class LinkStatusEnum(str, Enum):
         """
         The status of the link.
@@ -22509,7 +22458,6 @@ class VariableMetadata:
 
         NORMAL = 'normal'
         BROKEN = 'broken'
-
 
 
 class VersionResponse:
